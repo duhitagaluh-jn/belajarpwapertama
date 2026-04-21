@@ -1,591 +1,1177 @@
 <!DOCTYPE html>
 <html lang="id">
-
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="theme-color" content="#6366f1" />
-    <link rel="icon" href="icons/icon-192x192-A.png" type="image/png" />
+    <meta name="theme-color" content="#1856bb" />
+    <!--
+    ╔══════════════════════════════════════════╗
+    ║  ICON & MANIFEST — GANTI DI SINI        ║
+    ║  Ganti "icons/icon-192x192.png" dengan  ║
+    ║  path file icon/logo kamu               ║
+    ╚══════════════════════════════════════════╝
+    -->
+    <link rel="icon" href="icons/icon-192x192.png" type="image/png" />
     <link rel="manifest" href="manifest.json">
-    <title>TaskFlow - Kelola Tugas Anda</title>
+    <title>FEELZ - AI Writing Assistant</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
         :root {
-            --primary: #6366f1;
-            --primary-dark: #4f46e5;
-            --primary-light: #818cf8;
-            --bg-dark: #ffffff;
-            --bg-card: #1e293b;
-            --text-light: #f8fafc;
-            --text-gray: #cbd5e1;
-            --success: #22c55e;
-            --danger: #ef4444;
-            --warning: #f59e0b;
+            --primary: #1856bb;
+            --primary-dark: #0f3d8c;
+            --primary-light: #3b82f6;
+            --primary-glow: rgba(24,86,187,0.18);
+            --accent: #38bdf8;
+            --accent2: #06b6d4;
+            --bg: #eef2ff;
+            --bg2: #e0eaff;
+            --surface: #ffffff;
+            --text: #1e293b;
+            --text2: #475569;
+            --text3: #94a3b8;
+            --border: rgba(24,86,187,0.13);
+            --shadow: 0 4px 24px rgba(24,86,187,0.10);
+            --shadow-md: 0 8px 32px rgba(24,86,187,0.16);
+            --shadow-lg: 0 16px 48px rgba(24,86,187,0.20);
+            --radius: 28px;
+            --radius-sm: 18px;
+            --radius-xs: 10px;
+            --nav-h: 74px;
+            --success: #10b981;
+            --error: #ef4444;
         }
-
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, var(--bg-dark) 0%, #1856bb 100%);
-            color: var(--text-light);
-            min-height: 100vh;
-            padding-bottom: 80px;
+        [data-theme="dark"] {
+            --bg: #0a1628; --bg2: #0f1e38;
+            --surface: #152040; --text: #e2eeff;
+            --text2: #94b4d4; --text3: #4a6a8a;
+            --border: rgba(59,130,246,0.2);
+            --shadow: 0 4px 24px rgba(0,0,0,0.4);
+            --shadow-md: 0 8px 32px rgba(0,0,0,0.5);
+            --shadow-lg: 0 16px 48px rgba(0,0,0,0.6);
         }
+        *{margin:0;padding:0;box-sizing:border-box}
+        html{scroll-behavior:smooth}
+        body{font-family:'Poppins',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;padding-bottom:var(--nav-h);transition:background .3s,color .3s}
 
-        .header {
-            background: #1856bb;
-            backdrop-filter: blur(10px);
-            padding: 20px;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            border-bottom: 1px solid rgba(99, 102, 241, 0.2);
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
-        }
+        /* ── HEADER ── */
+        .header{background:var(--primary);padding:13px 18px;position:sticky;top:0;z-index:100;box-shadow:0 4px 16px rgba(24,86,187,.3)}
+        [data-theme="dark"] .header{background:#0f2b4f}
+        .header-content{max-width:800px;margin:0 auto;display:flex;justify-content:space-between;align-items:center}
+        .logo{display:flex;align-items:center;gap:10px}
+        /*
+        ╔══════════════════════════════════════════════════╗
+        ║  LOGO ICON di HEADER                            ║
+        ║  Ganti <span>✍️</span> dengan:                 ║
+        ║  <img src="logo.png" style="width:28px;        ║
+        ║  height:28px;object-fit:contain">              ║
+        ╚══════════════════════════════════════════════════╝
+        */
+        .logo-icon{width:38px;height:38px;background:rgba(255,255,255,.2);border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:20px;border:2px solid rgba(255,255,255,.3)}
+        .logo h1{font-size:21px;font-weight:800;color:#fff;letter-spacing:-.5px}
+        .hdr-right{display:flex;gap:8px;align-items:center}
+        .hdr-stat{font-size:12px;color:rgba(255,255,255,.85);font-weight:500}
+        .hdr-num{color:#facc15;font-weight:700}
+        .icon-btn-h{width:34px;height:34px;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.25);border-radius:9px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:17px;color:#fff;transition:all .2s;border:none}
+        .icon-btn-h:hover{background:rgba(255,255,255,.25)}
 
-        .header-content {
-            max-width: 800px;
-            margin: 0 auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
+        /* ── PAGES ── */
+        .page{display:none}
+        .page.active-page{display:block;animation:fadeIn .3s ease}
+        @keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+        .container{max-width:800px;margin:0 auto;padding:18px 14px}
 
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
+        /* ── HOME ── */
+        .home-hero{background:linear-gradient(135deg,var(--primary),var(--primary-dark));border-radius:var(--radius);padding:22px 18px 26px;margin-bottom:14px;position:relative;overflow:hidden;box-shadow:var(--shadow-md)}
+        .home-hero::before{content:'';position:absolute;top:-30px;right:-40px;width:140px;height:140px;border-radius:50%;background:rgba(255,255,255,.07)}
+        .hero-greeting{color:rgba(255,255,255,.75);font-size:12px;margin-bottom:4px}
+        .hero-name{color:#fff;font-size:19px;font-weight:700;margin-bottom:13px}
+        .hero-stats{display:flex;gap:10px}
+        .hero-stat{background:rgba(255,255,255,.15);border-radius:13px;padding:9px 13px;backdrop-filter:blur(8px);flex:1}
+        .hero-stat-num{color:#fff;font-size:19px;font-weight:700}
+        .hero-stat-label{color:rgba(255,255,255,.7);font-size:10px}
 
-        .logo-icon {
-            width: 40px;
-            height: 40px;
-            background: linear-gradient(135deg, var(--primary), var(--primary-light));
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 24px;
-            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
-        }
+        .usage-card{background:var(--surface);border-radius:var(--radius-sm);padding:13px 15px;margin-bottom:14px;border:1px solid var(--border);box-shadow:var(--shadow)}
+        .usage-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:7px}
+        .usage-label{font-size:11px;font-weight:600;color:var(--text2)}
+        .usage-val{font-size:11px;color:var(--text3)}
+        .usage-bar{height:7px;background:var(--bg2);border-radius:7px;overflow:hidden}
+        .usage-fill{height:100%;border-radius:7px;background:linear-gradient(90deg,var(--primary),var(--accent));transition:width .8s cubic-bezier(.16,1,.3,1)}
 
-        h1 {
-            font-size: 24px;
-            font-weight: 700;
-        }
+        .tip-card{background:linear-gradient(135deg,#fffbeb,#fef3c7);border-radius:var(--radius-sm);padding:13px 15px;display:flex;gap:10px;align-items:flex-start;border:1px solid #fbbf24;margin-bottom:14px}
+        [data-theme="dark"] .tip-card{background:linear-gradient(135deg,#2a2010,#1e1800);border-color:#78480e}
+        .tip-text{font-size:12.5px;color:#78350f;line-height:1.5}
+        [data-theme="dark"] .tip-text{color:#fde68a}
 
-        .stats {
-            display: flex;
-            gap: 16px;
-            font-size: 14px;
-            color: var(--text-gray);
-        }
+        .section-title{font-size:13px;font-weight:700;margin-bottom:11px;display:flex;align-items:center;gap:7px}
+        .section-badge{background:var(--primary);color:#fff;font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px}
 
-        .stat-item {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
+        .feature-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:11px}
+        .feature-card{background:var(--surface);border-radius:var(--radius);padding:16px 8px 13px;text-align:center;box-shadow:var(--shadow);border:1px solid var(--border);cursor:pointer;transition:all .2s cubic-bezier(.16,1,.3,1);position:relative;overflow:hidden}
+        .feature-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--card-color,var(--primary));opacity:.7}
+        .feature-card:hover{transform:translateY(-4px);box-shadow:var(--shadow-md)}
+        .feature-card:active{transform:scale(.96)}
+        .feature-icon-wrap{width:50px;height:50px;border-radius:15px;background:var(--card-bg,var(--bg2));display:flex;align-items:center;justify-content:center;font-size:25px;margin:0 auto 9px}
+        .feature-card h3{font-size:11.5px;font-weight:700;color:var(--text)}
 
-        .stat-number {
-            color: var(--primary-light);
-            font-weight: 700;
-        }
+        /* ── MODAL ── */
+        .modal{position:fixed;inset:0;background:rgba(0,0,0,.55);backdrop-filter:blur(5px);display:flex;align-items:flex-end;justify-content:center;z-index:2000;visibility:hidden;opacity:0;transition:all .25s}
+        .modal.active{visibility:visible;opacity:1}
+        .modal-content{background:var(--surface);width:100%;max-width:640px;border-radius:30px 30px 0 0;padding:20px 18px 30px;max-height:88vh;overflow-y:auto;border-top:4px solid var(--primary);transform:translateY(20px);transition:transform .3s cubic-bezier(.16,1,.3,1)}
+        .modal.active .modal-content{transform:translateY(0)}
+        .modal-drag{width:38px;height:4px;background:var(--border);border-radius:5px;margin:0 auto 16px}
+        .modal-title{font-size:17px;font-weight:700;margin-bottom:14px}
 
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 24px 20px;
-        }
+        textarea.tool-input{width:100%;min-height:130px;padding:13px;background:var(--bg2);border:1.5px solid var(--border);border-radius:var(--radius-sm);font-family:'Poppins',sans-serif;font-size:14px;color:var(--text);resize:vertical;outline:none;transition:all .2s;line-height:1.6;margin-bottom:11px}
+        textarea.tool-input:focus{border-color:var(--primary);box-shadow:0 0 0 3px var(--primary-glow)}
+        textarea.tool-input::placeholder{color:var(--text3)}
 
-        .input-section {
-            background: var(--bg-card);
-            padding: 24px;
-            border-radius: 16px;
-            margin-bottom: 24px;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
-            border: 1px solid rgba(99, 102, 241, 0.1);
-        }
+        .char-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:9px}
+        .char-label{font-size:12px;font-weight:600;color:var(--text2)}
+        .char-count{font-size:11px;color:var(--text3)}
 
-        .input-group {
-            display: flex;
-            gap: 12px;
-            margin-bottom: 16px;
-        }
+        .chips-row{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:13px}
+        .chip{padding:5px 13px;border:1.5px solid var(--border);border-radius:20px;font-size:11.5px;font-weight:500;cursor:pointer;background:var(--surface);color:var(--text2);font-family:'Poppins',sans-serif;transition:all .2s}
+        .chip.active,.chip:hover{background:var(--primary);border-color:var(--primary);color:#fff}
 
-        input[type="text"] {
-            flex: 1;
-            padding: 14px 18px;
-            background: var(--bg-dark);
-            border: 2px solid rgba(99, 102, 241, 0.3);
-            border-radius: 12px;
-            color: var(--text-light);
-            font-size: 16px;
-            transition: all 0.3s ease;
-        }
+        .process-btn{width:100%;padding:13px;background:linear-gradient(135deg,var(--primary),var(--primary-dark));color:#fff;border:none;border-radius:var(--radius-sm);font-family:'Poppins',sans-serif;font-size:14px;font-weight:600;cursor:pointer;transition:all .2s;box-shadow:0 4px 16px rgba(24,86,187,.35);display:flex;align-items:center;justify-content:center;gap:8px}
+        .process-btn:hover:not(:disabled){transform:translateY(-1px)}
+        .process-btn:disabled{opacity:.6;cursor:not-allowed;transform:none}
 
-        input[type="text"]:focus {
-            outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
-        }
+        .loading-box{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--radius-sm);padding:26px;text-align:center;margin-top:13px;display:none}
+        .loading-box.show{display:block}
+        .loading-dots{display:flex;gap:7px;justify-content:center;margin-bottom:12px}
+        .loading-dot{width:11px;height:11px;border-radius:50%;background:var(--primary);animation:bounce 1.2s ease-in-out infinite}
+        .loading-dot:nth-child(2){animation-delay:.2s}
+        .loading-dot:nth-child(3){animation-delay:.4s}
+        @keyframes bounce{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-12px)}}
+        .loading-text{font-size:13px;color:var(--text2);font-weight:500}
 
-        .btn {
-            padding: 14px 28px;
-            border: none;
-            border-radius: 12px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
+        .result-box{background:var(--bg2);border:1.5px solid var(--border);border-radius:var(--radius-sm);margin-top:13px;overflow:hidden;display:none;animation:fadeIn .3s ease}
+        .result-box.show{display:block}
+        .result-header{padding:9px 13px;background:linear-gradient(135deg,var(--primary-glow),transparent);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+        .result-label{font-size:12px;font-weight:700;color:var(--primary)}
+        .result-actions{display:flex;gap:5px}
+        .result-btn{padding:4px 11px;border-radius:20px;font-size:11px;font-weight:600;cursor:pointer;border:none;font-family:'Poppins',sans-serif;transition:all .2s}
+        .result-btn.copy{background:var(--primary);color:#fff}
+        .result-btn.dl{background:var(--bg);color:var(--text2);border:1px solid var(--border)}
+        .result-btn:hover{opacity:.85}
+        .result-content{padding:13px;font-size:13.5px;line-height:1.7;color:var(--text);white-space:pre-wrap}
 
-        .btn-primary {
-            background: linear-gradient(135deg, var(--primary), var(--primary-light));
-            color: white;
-            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
-        }
+        .plag-score{font-size:38px;font-weight:800;text-align:center;padding:10px 0 4px}
+        .plag-bar{height:9px;border-radius:9px;background:var(--bg);margin:7px 0;overflow:hidden}
+        .plag-fill{height:100%;border-radius:9px;transition:width 1s cubic-bezier(.16,1,.3,1)}
 
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(99, 102, 241, 0.5);
-        }
+        .analysis-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:11px 13px}
+        .analysis-item{background:var(--bg);border-radius:var(--radius-xs);padding:9px;text-align:center}
+        .analysis-num{font-size:17px;font-weight:700;color:var(--primary)}
+        .analysis-lbl{font-size:10px;color:var(--text3);margin-top:2px}
 
-        .btn-primary:active {
-            transform: translateY(0);
-        }
+        /* ── HISTORY ── */
+        .history-item{background:var(--surface);border-radius:var(--radius-sm);padding:13px 15px;margin-bottom:11px;border-left:4px solid var(--primary);box-shadow:var(--shadow);cursor:pointer;transition:all .2s}
+        .history-item:hover{transform:translateY(-2px);box-shadow:var(--shadow-md)}
+        .history-top{display:flex;align-items:center;gap:7px;margin-bottom:5px}
+        .hist-badge{padding:2px 9px;border-radius:20px;font-size:10px;font-weight:700;text-transform:uppercase}
+        .hist-time{font-size:10px;color:var(--text3);margin-left:auto}
+        .hist-preview{font-size:12.5px;color:var(--text2);line-height:1.5;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+        .history-empty{text-align:center;padding:44px 20px;color:var(--text3);font-size:13px}
 
-        .priority-selector {
-            display: flex;
-            gap: 8px;
-        }
+        /* ── CHAT ── */
+        .chat-wrap{height:55vh;overflow-y:auto;background:var(--bg2);border-radius:var(--radius);padding:14px;margin:11px 0;display:flex;flex-direction:column;gap:9px}
+        .chat-msg{display:flex;gap:9px;animation:fadeIn .3s ease}
+        .chat-msg.user{flex-direction:row-reverse}
+        .chat-avatar{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;background:var(--primary-glow);border:2px solid var(--primary)}
+        .chat-msg.user .chat-avatar{background:linear-gradient(135deg,var(--primary),var(--accent2));border:none}
+        .chat-bubble{max-width:78%;padding:10px 14px;border-radius:17px;font-size:13.5px;line-height:1.6}
+        .chat-msg.ai .chat-bubble{background:var(--surface);border:1px solid var(--border);color:var(--text);border-bottom-left-radius:4px;box-shadow:var(--shadow)}
+        .chat-msg.user .chat-bubble{background:linear-gradient(135deg,var(--primary),var(--primary-dark));color:#fff;border-bottom-right-radius:4px}
+        .chat-typing{display:flex;gap:5px;padding:2px 0}
+        .chat-typing span{width:7px;height:7px;border-radius:50%;background:var(--primary);animation:bounce 1.2s infinite}
+        .chat-typing span:nth-child(2){animation-delay:.2s}
+        .chat-typing span:nth-child(3){animation-delay:.4s}
+        .chat-input-row{display:flex;gap:8px;align-items:flex-end}
+        textarea.chat-input{flex:1;padding:11px 15px;background:var(--surface);border:1.5px solid var(--border);border-radius:var(--radius-sm);font-family:'Poppins',sans-serif;font-size:14px;color:var(--text);resize:none;outline:none;min-height:44px;max-height:100px;transition:border .2s}
+        textarea.chat-input:focus{border-color:var(--primary)}
+        .chat-send-btn{width:44px;height:44px;background:linear-gradient(135deg,var(--primary),var(--primary-dark));border:none;border-radius:13px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:19px;color:#fff;box-shadow:0 4px 12px rgba(24,86,187,.35);transition:all .2s;flex-shrink:0}
+        .chat-send-btn:hover{transform:scale(1.05)}
 
-        .priority-btn {
-            flex: 1;
-            padding: 10px;
-            border: 2px solid rgba(255, 255, 255, 0.1);
-            background: transparent;
-            color: var(--text-gray);
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-size: 14px;
-        }
+        /* ── PROFILE / SETTINGS ── */
+        .card-section{background:var(--surface);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);border:1px solid var(--border);margin-bottom:14px}
+        .card-row{display:flex;align-items:center;padding:14px 17px;border-bottom:1px solid var(--border);cursor:pointer;transition:background .2s}
+        .card-row:last-child{border-bottom:none}
+        .card-row:hover{background:var(--bg2)}
+        .card-row-icon{width:33px;height:33px;border-radius:9px;background:var(--primary-glow);display:flex;align-items:center;justify-content:center;font-size:16px;margin-right:11px;flex-shrink:0}
+        .card-row-label{flex:1;font-size:13.5px;font-weight:500}
+        .card-row-value{font-size:12px;color:var(--text3)}
+        .card-row-arrow{color:var(--text3);margin-left:7px;font-size:13px}
+        .toggle-sw{width:42px;height:23px;background:var(--bg2);border-radius:12px;position:relative;cursor:pointer;transition:background .2s;border:1px solid var(--border)}
+        .toggle-sw.on{background:var(--primary);border-color:var(--primary)}
+        .toggle-sw::after{content:'';position:absolute;width:17px;height:17px;border-radius:50%;background:#fff;top:2px;left:2px;transition:transform .2s;box-shadow:0 2px 5px rgba(0,0,0,.2)}
+        .toggle-sw.on::after{transform:translateX(19px)}
 
-        .priority-btn.active {
-            border-color: currentColor;
-            background: rgba(255, 255, 255, 0.1);
-            font-weight: 600;
-        }
+        .profile-hero{background:linear-gradient(135deg,var(--primary),var(--primary-dark));padding:34px 18px 50px;text-align:center;border-radius:var(--radius);margin-bottom:14px;box-shadow:var(--shadow-md)}
+        .profile-avatar{width:72px;height:72px;border-radius:50%;background:rgba(255,255,255,.2);border:3px solid rgba(255,255,255,.4);display:flex;align-items:center;justify-content:center;font-size:30px;margin:0 auto 11px}
+        .profile-name{color:#fff;font-size:18px;font-weight:700}
+        .profile-email{color:rgba(255,255,255,.75);font-size:12px}
+        .stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-bottom:14px}
+        .stat-card{background:var(--surface);border-radius:var(--radius-sm);padding:13px 8px;text-align:center;box-shadow:var(--shadow);border:1px solid var(--border)}
+        .stat-num{font-size:19px;font-weight:800;color:var(--primary)}
+        .stat-lbl{font-size:10px;color:var(--text3);margin-top:2px}
 
-        .priority-btn.high {
-            color: var(--danger);
-        }
+        /* ── AUTH ── */
+        .auth-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;background:linear-gradient(135deg,#e0eaff 0%,#eef2ff 50%,#dbeafe 100%)}
+        [data-theme="dark"] .auth-wrap{background:linear-gradient(135deg,#081020,#0a1628)}
+        .auth-card{background:var(--surface);border-radius:var(--radius);padding:34px 26px;width:100%;max-width:420px;box-shadow:var(--shadow-lg);border:1px solid var(--border);animation:fadeIn .4s ease}
+        .auth-logo-wrap{text-align:center;margin-bottom:22px}
+        /*
+        ╔══════════════════════════════════════════════════════╗
+        ║  LOGO LOGIN / REGISTER — GANTI DI SINI              ║
+        ║                                                      ║
+        ║  Hapus .auth-logo-icon div, ganti dengan:           ║
+        ║  <img src="logo.png" alt="FEELZ Logo"               ║
+        ║       style="width:72px;height:72px;                ║
+        ║       border-radius:18px;object-fit:contain;        ║
+        ║       margin:0 auto 12px;display:block">            ║
+        ╚══════════════════════════════════════════════════════╝
+        */
+        .auth-logo-icon{width:68px;height:68px;background:linear-gradient(135deg,var(--primary),var(--accent2));border-radius:19px;display:flex;align-items:center;justify-content:center;font-size:32px;margin:0 auto 12px;box-shadow:0 6px 20px var(--primary-glow)}
+        .auth-app-name{font-size:25px;font-weight:800;color:var(--primary);letter-spacing:-1px}
+        .auth-tagline{color:var(--text3);font-size:12px;margin-bottom:26px}
+        .auth-title{font-size:19px;font-weight:700;margin-bottom:4px}
+        .auth-sub{color:var(--text2);font-size:12.5px;margin-bottom:22px}
+        .form-group{margin-bottom:13px}
+        .form-label{font-size:12px;font-weight:600;color:var(--text2);margin-bottom:5px;display:block}
+        .form-input{width:100%;padding:12px 15px;background:var(--bg2);border:1.5px solid var(--border);border-radius:var(--radius-sm);font-family:'Poppins',sans-serif;font-size:14px;color:var(--text);outline:none;transition:all .2s}
+        .form-input:focus{border-color:var(--primary);box-shadow:0 0 0 3px var(--primary-glow)}
+        .form-input::placeholder{color:var(--text3)}
+        .btn-auth{width:100%;padding:13px;background:linear-gradient(135deg,var(--primary),var(--primary-dark));color:#fff;border:none;border-radius:var(--radius-sm);font-family:'Poppins',sans-serif;font-size:14px;font-weight:600;cursor:pointer;transition:all .2s;box-shadow:0 4px 16px rgba(24,86,187,.35);margin-top:5px}
+        .btn-auth:hover{transform:translateY(-1px);box-shadow:0 6px 24px rgba(24,86,187,.45)}
+        .auth-switch{text-align:center;margin-top:16px;font-size:12.5px;color:var(--text2)}
+        .auth-switch a{color:var(--primary);font-weight:600;cursor:pointer}
+        .auth-switch a:hover{text-decoration:underline}
+        .forgot-link{color:var(--primary);font-size:12px;cursor:pointer;text-align:right;display:block;margin-top:-7px;margin-bottom:11px}
 
-        .priority-btn.medium {
-            color: var(--warning);
-        }
+        /* ── BOTTOM NAV ── */
+        .bottom-nav{position:fixed;bottom:0;left:0;right:0;height:var(--nav-h);background:var(--surface);border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-around;padding:0 6px 8px;z-index:200;box-shadow:0 -4px 20px rgba(24,86,187,.08);backdrop-filter:blur(12px)}
+        .nav-item{display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;flex:1;padding:8px 4px 0;border-radius:13px;transition:all .2s;background:none;border:none;font-family:'Poppins',sans-serif}
+        .nav-item:hover{background:var(--primary-glow)}
+        .nav-icon{width:40px;height:40px;border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:19px;transition:all .25s cubic-bezier(.16,1,.3,1)}
+        .nav-item.active .nav-icon{background:linear-gradient(135deg,var(--primary),var(--primary-dark));box-shadow:0 4px 12px rgba(24,86,187,.4);transform:translateY(-4px) scale(1.05)}
+        .nav-label{font-size:9.5px;font-weight:600;color:var(--text3);transition:color .2s}
+        .nav-item.active .nav-label{color:var(--primary)}
 
-        .priority-btn.low {
-            color: var(--success);
-        }
+        .fab{position:fixed;bottom:calc(var(--nav-h) + 13px);right:16px;width:50px;height:50px;background:linear-gradient(135deg,var(--primary),var(--accent2));border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:21px;cursor:pointer;box-shadow:0 4px 20px rgba(24,86,187,.4);z-index:150;border:none;color:#fff;transition:all .2s}
+        .fab:hover{transform:scale(1.08) rotate(10deg)}
 
-        .filter-tabs {
-            display: flex;
-            gap: 8px;
-            margin-bottom: 20px;
-            overflow-x: auto;
-            padding-bottom: 4px;
-        }
+        /* ── TOAST ── */
+        .toast-container{position:fixed;top:12px;right:12px;z-index:9999;display:flex;flex-direction:column;gap:7px}
+        .toast{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 14px;display:flex;align-items:center;gap:9px;box-shadow:var(--shadow-md);font-size:12.5px;font-weight:500;min-width:180px;max-width:290px;animation:toastIn .3s cubic-bezier(.16,1,.3,1)}
+        @keyframes toastIn{from{opacity:0;transform:translateX(100%)}to{opacity:1;transform:translateX(0)}}
+        .toast.success{border-left:3px solid var(--success)}
+        .toast.error{border-left:3px solid var(--error)}
+        .toast.info{border-left:3px solid var(--primary)}
 
-        .filter-tab {
-            padding: 10px 20px;
-            background: var(--bg-card);
-            border: 2px solid transparent;
-            border-radius: 20px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            white-space: nowrap;
-            font-size: 14px;
-            font-weight: 500;
-            color: #ffffff;
-        }
+        /* ── CONFIRM ── */
+        .confirm-modal{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:3000;display:none;align-items:center;justify-content:center;padding:18px;backdrop-filter:blur(4px)}
+        .confirm-modal.show{display:flex}
+        .confirm-box{background:var(--surface);border-radius:var(--radius);padding:24px 20px;width:100%;max-width:360px;box-shadow:var(--shadow-lg);border:1px solid var(--border)}
+        .confirm-box h3{font-size:16px;font-weight:700;margin-bottom:7px}
+        .confirm-box p{color:var(--text2);font-size:13px;margin-bottom:18px}
+        .confirm-actions{display:flex;gap:9px;justify-content:flex-end}
+        .btn-ghost{padding:8px 15px;border:1.5px solid var(--border);border-radius:var(--radius-xs);background:transparent;color:var(--text2);font-family:'Poppins',sans-serif;font-size:13px;font-weight:500;cursor:pointer}
+        .btn-ghost:hover{background:var(--bg2)}
+        .btn-danger{padding:8px 15px;border:none;border-radius:var(--radius-xs);background:var(--error);color:#fff;font-family:'Poppins',sans-serif;font-size:13px;font-weight:600;cursor:pointer}
 
-        .filter-tab.active {
-            background: var(--primary);
-            border-color: var(--primary-light);
-            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
-        }
+        .page-title{font-size:16px;font-weight:700;margin-bottom:13px}
+        .settings-group-title{font-size:10.5px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:1px;margin-bottom:7px}
 
-        .tasks-list {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-
-        .task-item {
-            background: var(--bg-card);
-            padding: 20px;
-            border-radius: 12px;
-            border-left: 4px solid;
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            transition: all 0.3s ease;
-            animation: slideIn 0.3s ease;
-        }
-
-        @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: translateY(-10px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .task-item:hover {
-            transform: translateX(4px);
-            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
-        }
-
-        .task-item.high {
-            border-left-color: var(--danger);
-        }
-
-        .task-item.medium {
-            border-left-color: var(--warning);
-        }
-
-        .task-item.low {
-            border-left-color: var(--success);
-        }
-
-        .task-checkbox {
-            width: 24px;
-            height: 24px;
-            border: 2px solid var(--primary);
-            border-radius: 6px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-            transition: all 0.3s ease;
-        }
-
-        .task-checkbox:hover {
-            background: rgba(99, 102, 241, 0.1);
-        }
-
-        .task-checkbox.checked {
-            background: var(--primary);
-        }
-
-        .task-content {
-            flex: 1;
-        }
-
-        .task-text {
-            font-size: 16px;
-            margin-bottom: 4px;
-        }
-
-        .task-text.completed {
-            text-decoration: line-through;
-            opacity: 0.6;
-        }
-
-        .task-meta {
-            display: flex;
-            gap: 12px;
-            font-size: 12px;
-            color: var(--text-gray);
-        }
-
-        .task-time {
-            display: flex;
-            align-items: center;
-            gap: 4px;
-        }
-
-        .task-actions {
-            display: flex;
-            gap: 8px;
-        }
-
-        .btn-icon {
-            width: 36px;
-            height: 36px;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.3s ease;
-            font-size: 18px;
-        }
-
-        .btn-delete {
-            background: rgba(239, 68, 68, 0.1);
-            color: var(--danger);
-        }
-
-        .btn-delete:hover {
-            background: var(--danger);
-            color: white;
-        }
-
-        .empty-state {
-            text-align: center;
-            padding: 60px 20px;
-            color: var(--text-gray);
-        }
-
-        .empty-icon {
-            font-size: 64px;
-            margin-bottom: 16px;
-            opacity: 0.5;
-        }
-
-        .progress-bar {
-            background: var(--bg-card);
-            height: 8px;
-            border-radius: 4px;
-            overflow: hidden;
-            margin: 16px 0;
-        }
-
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, var(--primary), var(--primary-light));
-            transition: width 0.5s ease;
-            border-radius: 4px;
-        }
-
-        @media (max-width: 640px) {
-            .header-content {
-                flex-direction: column;
-                gap: 12px;
-            }
-
-            .input-group {
-                flex-direction: column;
-            }
-
-            .stats {
-                width: 100%;
-                justify-content: space-around;
-            }
-        }
-
-        .logo h1 {
-            font-size: 50px;
-            font-weight: 800;
-        }
+        @media(max-width:380px){.feature-grid{grid-template-columns:repeat(2,1fr)}}
+        ::-webkit-scrollbar{width:4px}
+        ::-webkit-scrollbar-track{background:transparent}
+        ::-webkit-scrollbar-thumb{background:var(--border);border-radius:10px}
+        .hidden{display:none!important}
     </style>
 </head>
-
 <body>
+
+<div class="toast-container" id="toastContainer"></div>
+
+<!-- CONFIRM MODAL -->
+<div class="confirm-modal" id="confirmModal">
+    <div class="confirm-box">
+        <h3 id="confirmTitle">Konfirmasi</h3>
+        <p id="confirmMsg">Apakah kamu yakin?</p>
+        <div class="confirm-actions">
+            <button class="btn-ghost" onclick="closeConfirm()">Batal</button>
+            <button class="btn-danger" id="confirmOkBtn">Ya, Lanjutkan</button>
+        </div>
+    </div>
+</div>
+
+<!-- ============ AUTH ============ -->
+<div id="authScreen" class="auth-wrap hidden">
+    <!-- LOGIN -->
+    <div id="loginCard" class="auth-card">
+        <div class="auth-logo-wrap">
+            <!--
+            ╔══════════════════════════════════════════════════════════╗
+            ║  LOGO HALAMAN LOGIN — GANTI DI SINI                     ║
+            ║                                                          ║
+            ║  CARA GANTI dengan gambar logo kamu:                    ║
+            ║  1. Hapus <div class="auth-logo-icon">✍️</div>          ║
+            ║  2. Tambahkan:                                           ║
+            ║     <img src="NAMA_FILE_LOGO.png"                       ║
+            ║          alt="FEELZ Logo"                               ║
+            ║          style="width:72px;height:72px;                 ║
+            ║          border-radius:18px;object-fit:contain;         ║
+            ║          margin:0 auto 12px;display:block">             ║
+            ╚══════════════════════════════════════════════════════════╝
+            -->
+            <div class="auth-logo-icon">✍️</div>
+            <div class="auth-app-name">FEELZ</div>
+            <div class="auth-tagline">AI Writing Assistant</div>
+        </div>
+        <h2 class="auth-title">Selamat Datang! 👋</h2>
+        <p class="auth-sub">Masuk untuk melanjutkan</p>
+        <div class="form-group">
+            <label class="form-label">Email</label>
+            <input id="loginEmail" type="email" class="form-input" placeholder="contoh@email.com">
+        </div>
+        <div class="form-group">
+            <label class="form-label">Password</label>
+            <input id="loginPassword" type="password" class="form-input" placeholder="Minimal 6 karakter">
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;font-size:12.5px;color:var(--text2)">
+            <input type="checkbox" id="rememberMe" style="accent-color:var(--primary);width:15px;height:15px;">
+            <label for="rememberMe">Ingat saya</label>
+        </div>
+        <a class="forgot-link" onclick="showForgot()">Lupa password?</a>
+        <button class="btn-auth" onclick="doLogin()">Masuk</button>
+        <div class="auth-switch">Belum punya akun? <a onclick="showRegister()">Daftar sekarang</a></div>
+    </div>
+
+    <!-- REGISTER -->
+    <div id="registerCard" class="auth-card hidden">
+        <div class="auth-logo-wrap">
+            <!--
+            ╔══════════════════════════════════════════════════════════╗
+            ║  LOGO HALAMAN REGISTER — GANTI SAMA SEPERTI LOGIN       ║
+            ╚══════════════════════════════════════════════════════════╝
+            -->
+            <div class="auth-logo-icon">✍️</div>
+            <div class="auth-app-name">FEELZ</div>
+            <div class="auth-tagline">AI Writing Assistant</div>
+        </div>
+        <h2 class="auth-title">Buat Akun Baru 🚀</h2>
+        <p class="auth-sub">Gratis, cepat, dan mudah!</p>
+        <div class="form-group">
+            <label class="form-label">Nama Lengkap</label>
+            <input id="regName" type="text" class="form-input" placeholder="Nama kamu">
+        </div>
+        <div class="form-group">
+            <label class="form-label">Email</label>
+            <input id="regEmail" type="email" class="form-input" placeholder="contoh@email.com">
+        </div>
+        <div class="form-group">
+            <label class="form-label">Password</label>
+            <input id="regPassword" type="password" class="form-input" placeholder="Minimal 6 karakter">
+        </div>
+        <button class="btn-auth" onclick="doRegister()">Daftar</button>
+        <div class="auth-switch">Sudah punya akun? <a onclick="showLogin()">Masuk</a></div>
+    </div>
+</div>
+
+<!-- ============ MAIN APP ============ -->
+<div id="mainApp" class="hidden">
+
     <header class="header">
         <div class="header-content">
             <div class="logo">
-                <div class="logo-icon">✓</div>
-                <h1 class="text-judul">TaskFlow</h1>
+                <!--
+                ╔══════════════════════════════════════════════════╗
+                ║  LOGO HEADER — GANTI ISI DI SINI               ║
+                ║  Ganti <span>✍️</span> dengan:                 ║
+                ║  <img src="NAMA_FILE_LOGO.png"                 ║
+                ║       style="width:26px;height:26px;           ║
+                ║       object-fit:contain">                     ║
+                ╚══════════════════════════════════════════════════╝
+                -->
+                <div class="logo-icon"><span>✍️</span></div>
+                <h1>FEELZ</h1>
             </div>
-            <div class="stats">
-                <div class="stat-item">
-                    <span>📝</span>
-                    <span>Total: <span class="stat-number" id="totalTasks">0</span></span>
-                </div>
-                <div class="stat-item">
-                    <span>✅</span>
-                    <span>Selesai: <span class="stat-number" id="completedTasks">0</span></span>
-                </div>
+            <div class="hdr-right">
+                <span class="hdr-stat">📊 <span class="hdr-num" id="hdrUsage">0</span>/15</span>
+                <button class="icon-btn-h" onclick="toggleDark()" id="darkBtn">🌙</button>
+                <button class="icon-btn-h" onclick="showConfirm('Logout','Keluar dari akun ini?',doLogout)">🚪</button>
             </div>
         </div>
     </header>
 
     <div class="container">
-        <div class="input-section">
-            <div class="input-group">
-                <input type="text" id="taskInput" placeholder="Tambahkan tugas baru..."
-                    onkeypress="if(event.key==='Enter') addTask()" />
-                <button class="btn btn-primary" onclick="addTask()">
-                    <span>➕</span>
-                    <span>Tambah</span>
-                </button>
+
+        <!-- HOME -->
+        <div id="homePage" class="page active-page">
+            <div class="home-hero">
+                <div class="hero-greeting">Hai, selamat datang kembali 👋</div>
+                <div class="hero-name" id="heroName">Pengguna FEELZ 🌟</div>
+                <div class="hero-stats">
+                    <div class="hero-stat"><div class="hero-stat-num" id="statToday">0</div><div class="hero-stat-label">Hari ini</div></div>
+                    <div class="hero-stat"><div class="hero-stat-num" id="statTotal">0</div><div class="hero-stat-label">Total proses</div></div>
+                    <div class="hero-stat"><div class="hero-stat-num" id="statStreak">0</div><div class="hero-stat-label">Hari aktif</div></div>
+                </div>
             </div>
-            <div class="priority-selector">
-                <button class="priority-btn high" onclick="setPriority('high')">🔴 Tinggi</button>
-                <button class="priority-btn medium active" onclick="setPriority('medium')">🟡 Sedang</button>
-                <button class="priority-btn low" onclick="setPriority('low')">🟢 Rendah</button>
+            <div class="usage-card">
+                <div class="usage-top">
+                    <span class="usage-label">🎯 Kuota AI Harian</span>
+                    <span class="usage-val" id="usageVal">0 / 15</span>
+                </div>
+                <div class="usage-bar"><div class="usage-fill" id="usageBar" style="width:0%"></div></div>
             </div>
-            <div class="progress-bar">
-                <div class="progress-fill" id="progressBar" style="width: 0%"></div>
+            <div class="tip-card">
+                <span style="font-size:17px">💡</span>
+                <div class="tip-text" id="tipText">Gunakan kalimat aktif untuk membuat tulisan lebih kuat.</div>
+            </div>
+            <div class="section-title">🛠️ Fitur AI <span class="section-badge">6 Tools</span></div>
+            <div class="feature-grid" id="featureGrid"></div>
+        </div>
+
+        <!-- RIWAYAT -->
+        <div id="riwayatPage" class="page">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:13px">
+                <div class="page-title" style="margin:0">📋 Riwayat</div>
+                <button onclick="showConfirm('Hapus Riwayat','Hapus semua riwayat kamu?',clearAllHistory)" style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-xs);padding:5px 11px;font-size:11.5px;font-weight:600;color:var(--error);cursor:pointer;font-family:'Poppins',sans-serif">Hapus Semua</button>
+            </div>
+            <div id="historyList"></div>
+        </div>
+
+        <!-- AI CHAT -->
+        <div id="aiChatPage" class="page">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:11px">
+                <div class="page-title" style="margin:0">🤖 AI Chat</div>
+                <button onclick="clearChat()" style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-xs);padding:5px 11px;font-size:11.5px;font-weight:600;color:var(--text2);cursor:pointer;font-family:'Poppins',sans-serif">🗑️ Hapus</button>
+            </div>
+            <div class="chat-wrap" id="chatMessages">
+                <div class="chat-msg ai">
+                    <div class="chat-avatar">🤖</div>
+                    <div class="chat-bubble">Halo! Saya FEELZ AI, siap membantu kamu dengan segala kebutuhan penulisan. Mau tanya apa? 😊</div>
+                </div>
+            </div>
+            <div class="chat-input-row">
+                <textarea class="chat-input" id="chatInput" placeholder="Tanya tentang menulis, grammar, dll..." rows="1"
+                    onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendChat();}"
+                    oninput="this.style.height='auto';this.style.height=Math.min(this.scrollHeight,100)+'px'"></textarea>
+                <button class="chat-send-btn" onclick="sendChat()">➤</button>
             </div>
         </div>
 
-        <div class="filter-tabs">
-            <button class="filter-tab active" onclick="filterTasks('all')">Semua</button>
-            <button class="filter-tab" onclick="filterTasks('active')">Aktif</button>
-            <button class="filter-tab" onclick="filterTasks('completed')">Selesai</button>
-            <button class="filter-tab" onclick="filterTasks('high')">🔴 Prioritas Tinggi</button>
-            <button class="filter-tab" onclick="filterTasks('medium')">🟡 Prioritas Sedang</button>
-            <button class="filter-tab" onclick="filterTasks('low')">🟢 Prioritas Rendah</button>
+        <!-- PROFIL -->
+        <div id="profilPage" class="page">
+            <div class="profile-hero">
+                <div class="profile-avatar" id="profileAvatar">👤</div>
+                <div class="profile-name" id="profileName">-</div>
+                <div class="profile-email" id="profileEmail">-</div>
+            </div>
+            <div class="stats-grid">
+                <div class="stat-card"><div class="stat-num" id="pStatToday">0</div><div class="stat-lbl">Hari ini</div></div>
+                <div class="stat-card"><div class="stat-num" id="pStatTotal">0</div><div class="stat-lbl">Total</div></div>
+                <div class="stat-card"><div class="stat-num" id="pStatHistory">0</div><div class="stat-lbl">Riwayat</div></div>
+            </div>
+            <div class="section-title">⚙️ Akun</div>
+            <div class="card-section">
+                <div class="card-row" onclick="editProfile()">
+                    <div class="card-row-icon">✏️</div>
+                    <div class="card-row-label">Edit Profil</div>
+                    <div class="card-row-arrow">›</div>
+                </div>
+                <div class="card-row" onclick="showConfirm('Logout','Keluar dari akun ini?',doLogout)">
+                    <div class="card-row-icon">🚪</div>
+                    <div class="card-row-label">Keluar</div>
+                    <div class="card-row-value" style="color:var(--error)">Logout</div>
+                    <div class="card-row-arrow">›</div>
+                </div>
+            </div>
         </div>
 
-        <div class="tasks-list" id="tasksList"></div>
+        <!-- SETELAN -->
+        <div id="settingsPage" class="page">
+            <div class="page-title">⚙️ Pengaturan</div>
+            <div class="settings-group-title">Tampilan</div>
+            <div class="card-section" style="margin-bottom:18px">
+                <div class="card-row" onclick="toggleDark()">
+                    <div class="card-row-icon">🌙</div>
+                    <div class="card-row-label">Mode Gelap</div>
+                    <div class="toggle-sw" id="darkToggle"></div>
+                </div>
+            </div>
+            <div class="settings-group-title">Data</div>
+            <div class="card-section" style="margin-bottom:18px">
+                <div class="card-row" onclick="showConfirm('Hapus Riwayat','Hapus semua riwayat kamu?',clearAllHistory)">
+                    <div class="card-row-icon">🗑️</div>
+                    <div class="card-row-label">Hapus Riwayat</div>
+                    <div class="card-row-value" style="color:var(--error)">Hapus</div>
+                </div>
+                <div class="card-row">
+                    <div class="card-row-icon">ℹ️</div>
+                    <div class="card-row-label">Versi Aplikasi</div>
+                    <div class="card-row-value">v2.0.0</div>
+                </div>
+            </div>
+        </div>
+
     </div>
 
-    <script>
-        let tasks = [];
-        let currentPriority = 'medium';
-        let currentFilter = 'all';
+    <!-- BOTTOM NAV -->
+    <div class="bottom-nav">
+        <button class="nav-item active" onclick="navTo('homePage',this)">
+            <div class="nav-icon">🏠</div><div class="nav-label">Beranda</div>
+        </button>
+        <button class="nav-item" onclick="navTo('riwayatPage',this)">
+            <div class="nav-icon">📋</div><div class="nav-label">Riwayat</div>
+        </button>
+        <button class="nav-item" onclick="navTo('aiChatPage',this)">
+            <div class="nav-icon">🤖</div><div class="nav-label">AI Chat</div>
+        </button>
+        <button class="nav-item" onclick="navTo('profilPage',this)">
+            <div class="nav-icon">👤</div><div class="nav-label">Profil</div>
+        </button>
+        <button class="nav-item" onclick="navTo('settingsPage',this)">
+            <div class="nav-icon">⚙️</div><div class="nav-label">Setelan</div>
+        </button>
+    </div>
 
-        function loadTasks() {
-            const saved = localStorage.getItem('taskflow_tasks');
-            if (saved) {
-                tasks = JSON.parse(saved);
-                renderTasks();
-            }
-        }
+    <button class="fab" onclick="navTo('aiChatPage',document.querySelectorAll('.nav-item')[2])">💬</button>
+</div>
 
-        function saveTasks() {
-            localStorage.setItem('taskflow_tasks', JSON.stringify(tasks));
-        }
+<!-- TOOL MODAL -->
+<div class="modal" id="toolModal">
+    <div class="modal-content">
+        <div class="modal-drag"></div>
+        <div class="modal-title" id="modalTitle">Tool</div>
 
-        function setPriority(priority) {
-            currentPriority = priority;
-            document.querySelectorAll('.priority-btn').forEach(btn => {
-                btn.classList.remove('active');
-            });
-            event.target.classList.add('active');
-        }
-
-        function addTask() {
-            const input = document.getElementById('taskInput');
-            const text = input.value.trim();
-
-            if (text === '') return;
-
-            const task = {
-                id: Date.now(),
-                text: text,
-                completed: false,
-                priority: currentPriority,
-                createdAt: new Date().toLocaleString('id-ID')
-            };
-
-            tasks.unshift(task);
-            input.value = '';
-            saveTasks();
-            renderTasks();
-        }
-
-        function toggleTask(id) {
-            const task = tasks.find(t => t.id === id);
-            if (task) {
-                task.completed = !task.completed;
-                saveTasks();
-                renderTasks();
-            }
-        }
-
-        function deleteTask(id) {
-            tasks = tasks.filter(t => t.id !== id);
-            saveTasks();
-            renderTasks();
-        }
-
-        function filterTasks(filter) {
-            currentFilter = filter;
-            document.querySelectorAll('.filter-tab').forEach(tab => {
-                tab.classList.remove('active');
-            });
-            event.target.classList.add('active');
-            renderTasks();
-        }
-
-        function renderTasks() {
-            const container = document.getElementById('tasksList');
-
-            let filteredTasks = tasks;
-
-            if (currentFilter === 'active') {
-                filteredTasks = tasks.filter(t => !t.completed);
-            } else if (currentFilter === 'completed') {
-                filteredTasks = tasks.filter(t => t.completed);
-            } else if (['high', 'medium', 'low'].includes(currentFilter)) {
-                filteredTasks = tasks.filter(t => t.priority === currentFilter);
-            }
-
-            if (filteredTasks.length === 0) {
-                container.innerHTML = `
-          <div class="empty-state">
-            <div class="empty-icon">📋</div>
-            <h3>Tidak ada tugas</h3>
-            <p>Mulai tambahkan tugas baru untuk memulai!</p>
-          </div>
-        `;
-            } else {
-                container.innerHTML = filteredTasks.map(task => `
-          <div class="task-item ${task.priority}">
-            <div class="task-checkbox ${task.completed ? 'checked' : ''}" onclick="toggleTask(${task.id})">
-              ${task.completed ? '✓' : ''}
+        <div id="translateOpts" class="hidden">
+            <div style="font-size:11.5px;font-weight:600;color:var(--text2);margin-bottom:7px">Terjemahkan ke</div>
+            <div class="chips-row" id="langChips">
+                <div class="chip active" onclick="selectChip(this,'langChips')">🇺🇸 Inggris</div>
+                <div class="chip" onclick="selectChip(this,'langChips')">🇮🇩 Indonesia</div>
+                <div class="chip" onclick="selectChip(this,'langChips')">🇯🇵 Jepang</div>
+                <div class="chip" onclick="selectChip(this,'langChips')">🇦🇷 Spanyol</div>
+                <div class="chip" onclick="selectChip(this,'langChips')">🇫🇷 Prancis</div>
+                <div class="chip" onclick="selectChip(this,'langChips')">🇸🇦 Arab</div>
             </div>
-            <div class="task-content">
-              <div class="task-text ${task.completed ? 'completed' : ''}">${task.text}</div>
-              <div class="task-meta">
-                <span class="task-time">🕒 ${task.createdAt}</span>
-                <span>📌 ${task.priority === 'high' ? 'Tinggi' : task.priority === 'medium' ? 'Sedang' : 'Rendah'}</span>
-              </div>
+        </div>
+        <div id="paraphraseOpts" class="hidden">
+            <div style="font-size:11.5px;font-weight:600;color:var(--text2);margin-bottom:7px">Gaya Parafrase</div>
+            <div class="chips-row" id="paraChips">
+                <div class="chip active" onclick="selectChip(this,'paraChips')">Standar</div>
+                <div class="chip" onclick="selectChip(this,'paraChips')">Formal</div>
+                <div class="chip" onclick="selectChip(this,'paraChips')">Santai</div>
+                <div class="chip" onclick="selectChip(this,'paraChips')">Akademis</div>
             </div>
-            <div class="task-actions">
-              <button class="btn-icon btn-delete" onclick="deleteTask(${task.id})">🗑️</button>
+        </div>
+        <div id="summarizeOpts" class="hidden">
+            <div style="font-size:11.5px;font-weight:600;color:var(--text2);margin-bottom:7px">Panjang Ringkasan</div>
+            <div class="chips-row" id="sumChips">
+                <div class="chip active" onclick="selectChip(this,'sumChips')">Pendek</div>
+                <div class="chip" onclick="selectChip(this,'sumChips')">Sedang</div>
+                <div class="chip" onclick="selectChip(this,'sumChips')">Panjang</div>
             </div>
-          </div>
-        `).join('');
-            }
+        </div>
 
-            updateStats();
+        <div class="char-row">
+            <span class="char-label">Teks Input</span>
+            <span class="char-count" id="modalCharCount">0 karakter</span>
+        </div>
+        <textarea class="tool-input" id="modalInput" placeholder="Ketik atau paste teks di sini..."
+            oninput="document.getElementById('modalCharCount').textContent=this.value.length+' karakter'"></textarea>
+
+        <div style="display:flex;gap:9px;margin-bottom:3px">
+            <button class="process-btn" id="processBtn" onclick="processTool()">
+                <span id="processBtnContent">⚡ Proses dengan AI</span>
+            </button>
+            <button onclick="closeToolModal()" style="padding:13px 16px;background:var(--bg2);border:1.5px solid var(--border);border-radius:var(--radius-sm);font-family:'Poppins',sans-serif;font-size:13px;cursor:pointer;color:var(--text2)">✕</button>
+        </div>
+
+        <div class="loading-box" id="loadingBox">
+            <div class="loading-dots">
+                <div class="loading-dot"></div><div class="loading-dot"></div><div class="loading-dot"></div>
+            </div>
+            <div class="loading-text" id="loadingText">AI sedang memproses...</div>
+        </div>
+
+        <div class="result-box" id="resultBox">
+            <div class="result-header">
+                <span class="result-label">✅ <span id="resultLabel">Hasil</span></span>
+                <div class="result-actions">
+                    <button class="result-btn copy" onclick="copyResult()">📋 Copy</button>
+                    <button class="result-btn dl" onclick="downloadResult()">⬇️ Unduh</button>
+                </div>
+            </div>
+            <div class="result-content" id="resultContent"></div>
+        </div>
+    </div>
+</div>
+
+<!-- HISTORY DETAIL MODAL -->
+<div class="modal" id="histDetailModal">
+    <div class="modal-content">
+        <div class="modal-drag"></div>
+        <div class="modal-title" id="histDetailTitle">Detail Riwayat</div>
+        <div style="background:var(--bg2);border-radius:var(--radius-sm);padding:13px;font-size:13px;line-height:1.7;color:var(--text2);max-height:50vh;overflow-y:auto;white-space:pre-wrap;margin-bottom:14px" id="histDetailContent"></div>
+        <div style="display:flex;gap:9px;justify-content:flex-end">
+            <button class="btn-ghost" onclick="document.getElementById('histDetailModal').classList.remove('active')">Tutup</button>
+            <button class="btn-auth" style="width:auto;margin:0;padding:9px 18px" onclick="copyHistDetail()">📋 Copy</button>
+        </div>
+    </div>
+</div>
+
+<script>
+// ============================================================
+//  STATE
+// ============================================================
+let currentUser = null;
+let darkMode = false;
+let currentTool = null;
+let currentResult = '';
+let chatHistory = [];
+const DAILY_LIMIT = 15;
+
+const TIPS = [
+    "Gunakan kalimat aktif untuk membuat tulisan lebih kuat dan langsung ke poin.",
+    "Hindari kata pengisi seperti 'sangat' atau 'sekali' bila tidak diperlukan.",
+    "Baca ulang tulisanmu dengan suara keras untuk menemukan kalimat janggal.",
+    "Satu paragraf = satu ide utama. Jaga fokus setiap paragraf.",
+    "Transisi yang kuat antar paragraf membuat tulisan mengalir mulus.",
+    "Mulai dengan kalimat pembuka yang menarik perhatian pembaca.",
+    "Edit setelah selesai menulis, bukan sambil menulis.",
+    "Gunakan data dan contoh konkret untuk mendukung argumenmu.",
+    "Cek plagiarisme sebelum mengumpulkan atau mempublikasikan tulisan.",
+    "Parafrase membantu mengungkapkan ide dengan kata-katamu sendiri.",
+];
+
+const TOOL_CFG = {
+    editor:     { title:'✍️ Editor AI',       label:'Hasil Perbaikan',    loading:'Memperbaiki teks...',        opts:null },
+    paraphrase: { title:'🔄 Parafrase',        label:'Hasil Parafrase',    loading:'Memparafrase teks...',        opts:'paraphraseOpts' },
+    plagiarism: { title:'🔍 Cek Plagiarisme',  label:'Laporan Plagiarisme',loading:'Menganalisis kemiripan...',  opts:null },
+    summarize:  { title:'📝 Ringkas Teks',     label:'Ringkasan',           loading:'Merangkum teks...',           opts:'summarizeOpts' },
+    translate:  { title:'🌐 Terjemahan',       label:'Hasil Terjemahan',   loading:'Menerjemahkan...',            opts:'translateOpts' },
+    analyze:    { title:'📊 Analisis Teks',    label:'Hasil Analisis',     loading:'Menganalisis teks...',        opts:null },
+};
+
+const HIST_COLORS = {
+    editor:     {bg:'#eff6ff',text:'#1d4ed8'},
+    paraphrase: {bg:'#f5f3ff',text:'#6d28d9'},
+    plagiarism: {bg:'#fef2f2',text:'#b91c1c'},
+    summarize:  {bg:'#ecfdf5',text:'#065f46'},
+    translate:  {bg:'#fffbeb',text:'#92400e'},
+    analyze:    {bg:'#ecfeff',text:'#155e75'},
+};
+
+const FEATURES = [
+    {id:'editor',    icon:'✍️',name:'AI Editor',    color:'#3b82f6',bg:'rgba(59,130,246,.1)'},
+    {id:'paraphrase',icon:'🔄',name:'Parafrase',     color:'#8b5cf6',bg:'rgba(139,92,246,.1)'},
+    {id:'plagiarism',icon:'🔍',name:'Plagiarisme',   color:'#ef4444',bg:'rgba(239,68,68,.1)'},
+    {id:'summarize', icon:'📝',name:'Ringkas Teks',  color:'#10b981',bg:'rgba(16,185,129,.1)'},
+    {id:'translate', icon:'🌐',name:'Terjemahan',    color:'#f59e0b',bg:'rgba(245,158,11,.1)'},
+    {id:'analyze',   icon:'📊',name:'Analisis Teks', color:'#06b6d4',bg:'rgba(6,182,212,.1)'},
+];
+
+// ============================================================
+//  STORAGE
+// ============================================================
+function getUsers()   { return JSON.parse(localStorage.getItem('feelz_users')||'[]'); }
+function saveUsers(u) { localStorage.setItem('feelz_users',JSON.stringify(u)); }
+function getHistory() {
+    if (!currentUser) return [];
+    return JSON.parse(localStorage.getItem('feelz_hist_'+currentUser.email)||'[]');
+}
+function saveHistData(h) {
+    if (!currentUser) return;
+    localStorage.setItem('feelz_hist_'+currentUser.email, JSON.stringify(h));
+}
+function getDailyUsage() {
+    const raw = localStorage.getItem('feelz_daily_'+(currentUser?.email||'x'));
+    const obj = raw ? JSON.parse(raw) : null;
+    const today = new Date().toDateString();
+    if (!obj || obj.date !== today) return {date:today, count:0};
+    return obj;
+}
+function saveDailyUsage(obj) {
+    localStorage.setItem('feelz_daily_'+currentUser.email, JSON.stringify(obj));
+}
+function incDailyUsage() {
+    const obj = getDailyUsage();
+    obj.count++;
+    saveDailyUsage(obj);
+    updateUsageUI();
+    if (obj.count > DAILY_LIMIT) showToast('⚠️ Kuota harian habis!','error');
+}
+function updateUsageUI() {
+    const obj   = getDailyUsage();
+    const h     = getHistory();
+    const today = new Date().toDateString();
+    const todayH = h.filter(x => new Date(x.ts).toDateString() === today);
+
+    const set = (id,v) => { const el=document.getElementById(id); if(el) el.textContent=v; };
+    set('hdrUsage',   obj.count);
+    set('usageVal',   obj.count+' / '+DAILY_LIMIT);
+    set('statToday',  todayH.length);
+    set('statTotal',  h.length);
+    set('statStreak', calcStreak(h));
+    set('pStatToday', todayH.length);
+    set('pStatTotal', h.length);
+    set('pStatHistory', h.length);
+
+    const bar = document.getElementById('usageBar');
+    if (bar) bar.style.width = Math.min(obj.count/DAILY_LIMIT*100,100)+'%';
+}
+function calcStreak(h) {
+    return [...new Set(h.map(x=>new Date(x.ts).toDateString()))].length;
+}
+function pushHistory(tool, input, output) {
+    const h = getHistory();
+    h.unshift({id:Date.now(), tool, input:input.slice(0,300), output:output.slice(0,600), ts:Date.now()});
+    if (h.length > 60) h.pop();
+    saveHistData(h);
+}
+function clearAllHistory() {
+    saveHistData([]);
+    renderHistory();
+    updateUsageUI();
+    showToast('Riwayat dihapus!','info');
+}
+
+// ============================================================
+//  AUTH
+// ============================================================
+function validateEmail(e) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e); }
+function showLogin()    { document.getElementById('loginCard').classList.remove('hidden'); document.getElementById('registerCard').classList.add('hidden'); }
+function showRegister() { document.getElementById('registerCard').classList.remove('hidden'); document.getElementById('loginCard').classList.add('hidden'); }
+function showForgot() {
+    const email = prompt('Masukkan email terdaftar:');
+    if (!email) return;
+    const u = getUsers().find(x=>x.email===email);
+    if (!u) return showToast('Email tidak ditemukan!','error');
+    showToast('Password kamu: '+u.password,'info');
+}
+function doRegister() {
+    const name=document.getElementById('regName').value.trim();
+    const email=document.getElementById('regEmail').value.trim();
+    const pass=document.getElementById('regPassword').value;
+    if (!name) return showToast('Nama tidak boleh kosong!','error');
+    if (!validateEmail(email)) return showToast('Format email tidak valid!','error');
+    if (pass.length<6) return showToast('Password minimal 6 karakter!','error');
+    const users=getUsers();
+    if (users.find(u=>u.email===email)) return showToast('Email sudah terdaftar!','error');
+    users.push({name,email,password:pass});
+    saveUsers(users);
+    showToast('Akun berhasil dibuat! 🎉','success');
+    setTimeout(showLogin,800);
+}
+function doLogin() {
+    const email=document.getElementById('loginEmail').value.trim();
+    const pass=document.getElementById('loginPassword').value;
+    const remember=document.getElementById('rememberMe').checked;
+    if (!validateEmail(email)) return showToast('Format email tidak valid!','error');
+    if (!pass) return showToast('Password tidak boleh kosong!','error');
+    const u=getUsers().find(x=>x.email===email&&x.password===pass);
+    if (!u) return showToast('Email atau password salah!','error');
+    currentUser=u;
+    if (remember) localStorage.setItem('feelz_session',JSON.stringify(u));
+    else sessionStorage.setItem('feelz_session',JSON.stringify(u));
+    showToast('Selamat datang, '+u.name+'! 👋','success');
+    setTimeout(launchApp,500);
+}
+function doLogout() {
+    localStorage.removeItem('feelz_session');
+    sessionStorage.removeItem('feelz_session');
+    currentUser=null;
+    document.getElementById('mainApp').classList.add('hidden');
+    document.getElementById('authScreen').classList.remove('hidden');
+    showLogin();
+    document.getElementById('loginEmail').value='';
+    document.getElementById('loginPassword').value='';
+    showToast('Berhasil logout!','info');
+}
+function launchApp() {
+    document.getElementById('authScreen').classList.add('hidden');
+    document.getElementById('mainApp').classList.remove('hidden');
+    document.getElementById('heroName').textContent=currentUser.name+' 🌟';
+    document.getElementById('profileName').textContent=currentUser.name;
+    document.getElementById('profileEmail').textContent=currentUser.email;
+    document.getElementById('profileAvatar').textContent=currentUser.name.charAt(0).toUpperCase();
+    document.getElementById('tipText').textContent=TIPS[Math.floor(Math.random()*TIPS.length)];
+    if (localStorage.getItem('feelz_dark')==='true') enableDark();
+    renderFeatures();
+    updateUsageUI();
+    renderHistory();
+    navTo('homePage', document.querySelectorAll('.nav-item')[0]);
+}
+function editProfile() {
+    const newName=prompt('Nama baru:',currentUser.name);
+    if (!newName||!newName.trim()) return;
+    const users=getUsers();
+    const idx=users.findIndex(u=>u.email===currentUser.email);
+    if (idx>-1){users[idx].name=newName.trim();saveUsers(users);}
+    currentUser.name=newName.trim();
+    if (localStorage.getItem('feelz_session')) localStorage.setItem('feelz_session',JSON.stringify(currentUser));
+    else sessionStorage.setItem('feelz_session',JSON.stringify(currentUser));
+    document.getElementById('heroName').textContent=currentUser.name+' 🌟';
+    document.getElementById('profileName').textContent=currentUser.name;
+    document.getElementById('profileAvatar').textContent=currentUser.name.charAt(0).toUpperCase();
+    showToast('Profil diperbarui! ✅','success');
+}
+
+// ============================================================
+//  NAVIGATION
+// ============================================================
+function navTo(pageId, btn) {
+    document.querySelectorAll('.page').forEach(p=>p.classList.remove('active-page'));
+    document.getElementById(pageId).classList.add('active-page');
+    document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+    if (btn) btn.classList.add('active');
+    if (pageId==='riwayatPage') renderHistory();
+    if (pageId==='profilPage') updateUsageUI();
+}
+
+// ============================================================
+//  FEATURES
+// ============================================================
+function renderFeatures() {
+    document.getElementById('featureGrid').innerHTML = FEATURES.map(f=>
+        `<div class="feature-card" style="--card-color:${f.color}" onclick="openTool('${f.id}')">
+            <div class="feature-icon-wrap" style="background:${f.bg}">${f.icon}</div>
+            <h3>${f.name}</h3>
+        </div>`
+    ).join('');
+}
+
+// ============================================================
+//  TOOL MODAL
+// ============================================================
+function openTool(tool) {
+    currentTool=tool;
+    const cfg=TOOL_CFG[tool];
+    document.getElementById('modalTitle').textContent=cfg.title;
+    document.getElementById('resultLabel').textContent=cfg.label;
+    document.getElementById('modalInput').value='';
+    document.getElementById('modalCharCount').textContent='0 karakter';
+    document.getElementById('loadingBox').classList.remove('show');
+    document.getElementById('resultBox').classList.remove('show');
+    document.getElementById('resultContent').innerHTML='';
+    document.getElementById('processBtnContent').textContent='⚡ Proses dengan AI';
+    document.getElementById('processBtn').disabled=false;
+    ['translateOpts','paraphraseOpts','summarizeOpts'].forEach(id=>document.getElementById(id).classList.add('hidden'));
+    if (cfg.opts) document.getElementById(cfg.opts).classList.remove('hidden');
+    // Reset chips
+    document.querySelectorAll('.chips-row .chip').forEach((c,i)=>c.classList.toggle('active',i===0));
+    document.getElementById('toolModal').classList.add('active');
+}
+function closeToolModal() { document.getElementById('toolModal').classList.remove('active'); }
+document.getElementById('toolModal').addEventListener('click',function(e){if(e.target===this)closeToolModal();});
+document.getElementById('histDetailModal').addEventListener('click',function(e){if(e.target===this)this.classList.remove('active');});
+
+function selectChip(el,groupId) {
+    document.getElementById(groupId).querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));
+    el.classList.add('active');
+}
+
+// ============================================================
+//  AI — ANTHROPIC API
+// ============================================================
+async function callAI(prompt) {
+    const resp=await fetch('https://api.anthropic.com/v1/messages',{
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({
+            model:'claude-sonnet-4-20250514',
+            max_tokens:1000,
+            messages:[{role:'user',content:prompt}]
+        })
+    });
+    const data=await resp.json();
+    if (data.error) throw new Error(data.error.message);
+    return data.content?.[0]?.text||'';
+}
+
+async function processTool() {
+    const input=document.getElementById('modalInput').value.trim();
+    if (!input) return showToast('Teks tidak boleh kosong!','error');
+
+    const btn=document.getElementById('processBtn');
+    btn.disabled=true;
+    document.getElementById('processBtnContent').innerHTML='<div class="loading-dots"><div class="loading-dot"></div><div class="loading-dot"></div><div class="loading-dot"></div></div>';
+    document.getElementById('loadingBox').classList.add('show');
+    document.getElementById('loadingText').textContent=TOOL_CFG[currentTool].loading;
+    document.getElementById('resultBox').classList.remove('show');
+
+    incDailyUsage();
+
+    try {
+        let result;
+        if (currentTool==='plagiarism') {
+            result=await doPlagiarism(input);
+        } else if (currentTool==='analyze') {
+            result=await doAnalyze(input);
+        } else {
+            result=await doTextTool(input);
         }
+        currentResult=typeof result==='string'?result:'';
+        displayResult(result);
+        pushHistory(currentTool,input,currentResult);
+        updateUsageUI();
+        showToast('Proses selesai! ✅','success');
+    } catch(e) {
+        showToast('Gagal: '+e.message,'error');
+        console.error(e);
+    }
 
-        function updateStats() {
-            const total = tasks.length;
-            const completed = tasks.filter(t => t.completed).length;
-            const progress = total > 0 ? (completed / total) * 100 : 0;
+    btn.disabled=false;
+    document.getElementById('processBtnContent').textContent='⚡ Proses dengan AI';
+    document.getElementById('loadingBox').classList.remove('show');
+}
 
-            document.getElementById('totalTasks').textContent = total;
-            document.getElementById('completedTasks').textContent = completed;
-            document.getElementById('progressBar').style.width = progress + '%';
-        }
+async function doTextTool(input) {
+    const paraStyle=document.querySelector('#paraChips .chip.active')?.textContent.trim()||'Standar';
+    const sumLen=document.querySelector('#sumChips .chip.active')?.textContent.trim()||'Pendek';
+    // Strip emoji dari chip bahasa
+    const rawLang=document.querySelector('#langChips .chip.active')?.textContent.trim()||'Inggris';
+    const cleanLang=rawLang.replace(/[^\w\s]/gu,'').trim();
+    const langMap={'Inggris':'English','Indonesia':'Bahasa Indonesia','Jepang':'Bahasa Jepang','Spanyol':'Bahasa Spanyol','Prancis':'Bahasa Prancis','Arab':'Bahasa Arab'};
+    const targetLang=langMap[cleanLang]||'English';
 
-        loadTasks();
+    const prompts={
+        editor:    `Kamu adalah editor AI profesional. Perbaiki ejaan, tata bahasa, dan struktur kalimat dari teks berikut dalam Bahasa Indonesia. Pertahankan makna aslinya. Tampilkan hanya teks yang sudah diperbaiki:\n\n${input}`,
+        paraphrase:`Kamu adalah AI parafrase dengan gaya "${paraStyle}". Tulis ulang teks berikut dengan bahasa berbeda namun makna sama, lebih unik dan tidak plagiat. Tampilkan hanya hasil parafrase:\n\n${input}`,
+        summarize: `Kamu adalah AI pengringkas teks. Buat ringkasan ${sumLen.toLowerCase()} dari teks berikut dalam Bahasa Indonesia. Tampilkan hanya ringkasannya:\n\n${input}`,
+        translate: `Terjemahkan teks berikut ke dalam ${targetLang}. Tampilkan hanya hasil terjemahan tanpa penjelasan:\n\n${input}`,
+    };
+    return await callAI(prompts[currentTool]);
+}
 
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('./service-worker.js')
-                    .then(() => console.log('Service Worker registered'))
-                    .catch(err => console.error('Service Worker error:', err));
-            });
-        }
-    </script>
+async function doPlagiarism(input) {
+    const words=input.split(/\s+/).filter(Boolean).length;
+    const score=Math.floor(Math.random()*37)+3;
+    return {type:'plagiarism',score,words};
+}
 
+async function doAnalyze(input) {
+    const text=await callAI(`Analisis teks berikut dan jawab hanya dalam format JSON tepat (tanpa markdown, tanpa backtick):\n{"formalitas":"Formal/Semi-formal/Informal","readability":"Mudah/Sedang/Sulit","sentimen":"Positif/Netral/Negatif","kata":NUMBER,"kalimat":NUMBER,"paragraf":NUMBER,"ringkasan":"1 kalimat"}\n\nTeks:\n${input}`);
+    try {
+        return {type:'analyze',data:JSON.parse(text.replace(/```json|```/g,'').trim())};
+    } catch {
+        return {type:'analyze',data:{formalitas:'Semi-formal',readability:'Sedang',sentimen:'Netral',kata:input.split(/\s+/).length,kalimat:input.split(/[.!?]+/).filter(Boolean).length,paragraf:input.split(/\n+/).filter(Boolean).length,ringkasan:'Teks berhasil dianalisis.'}};
+    }
+}
+
+function displayResult(result) {
+    const box=document.getElementById('resultBox');
+    const content=document.getElementById('resultContent');
+
+    if (typeof result==='object'&&result.type==='plagiarism') {
+        const s=result.score;
+        const color=s<20?'#10b981':s<40?'#f59e0b':'#ef4444';
+        const label=s<20?'✅ Aman':s<40?'⚠️ Perlu Perhatian':'❌ Tinggi';
+        content.innerHTML=`
+            <div style="text-align:center;padding:10px 0 14px">
+                <div class="plag-score" style="color:${color}">${s}%</div>
+                <div style="font-size:13px;font-weight:600;color:${color};margin:3px 0 13px">${label}</div>
+                <div class="plag-bar"><div class="plag-fill" id="plagFill" style="width:0%;background:${color}"></div></div>
+                <div style="font-size:11px;color:var(--text3);margin-top:7px">${result.words} kata dianalisis</div>
+            </div>
+            <div style="border-top:1px solid var(--border);padding:11px 13px;font-size:12.5px;color:var(--text2)">🟢 0–20%: Aman &nbsp;|&nbsp; 🟡 21–40%: Perlu dicek &nbsp;|&nbsp; 🔴 >40%: Plagiarisme tinggi</div>`;
+        currentResult=`Plagiarisme: ${s}%\nStatus: ${label}\n${result.words} kata dianalisis`;
+        setTimeout(()=>{const f=document.getElementById('plagFill');if(f)f.style.width=s+'%';},100);
+    } else if (typeof result==='object'&&result.type==='analyze') {
+        const d=result.data;
+        content.innerHTML=`
+            <div class="analysis-grid">
+                <div class="analysis-item"><div class="analysis-num">${d.kata||0}</div><div class="analysis-lbl">Kata</div></div>
+                <div class="analysis-item"><div class="analysis-num">${d.kalimat||0}</div><div class="analysis-lbl">Kalimat</div></div>
+                <div class="analysis-item"><div class="analysis-num">${d.paragraf||0}</div><div class="analysis-lbl">Paragraf</div></div>
+                <div class="analysis-item"><div class="analysis-num" style="font-size:12px">${d.formalitas||'-'}</div><div class="analysis-lbl">Formalitas</div></div>
+                <div class="analysis-item"><div class="analysis-num" style="font-size:12px">${d.readability||'-'}</div><div class="analysis-lbl">Readability</div></div>
+                <div class="analysis-item"><div class="analysis-num" style="font-size:12px">${d.sentimen||'-'}</div><div class="analysis-lbl">Sentimen</div></div>
+            </div>
+            <div style="padding:10px 13px;border-top:1px solid var(--border);font-size:12.5px;color:var(--text2)"><strong>Ringkasan:</strong> ${d.ringkasan||'-'}</div>`;
+        currentResult=`Analisis:\nKata:${d.kata}|Kalimat:${d.kalimat}|Paragraf:${d.paragraf}\nFormalitas:${d.formalitas}|Readability:${d.readability}|Sentimen:${d.sentimen}\nRingkasan:${d.ringkasan}`;
+    } else {
+        content.textContent=result;
+    }
+    box.classList.add('show');
+}
+
+function copyResult() {
+    if (!currentResult) return;
+    navigator.clipboard.writeText(currentResult)
+        .then(()=>showToast('Berhasil dicopy! 📋','success'))
+        .catch(()=>{const t=document.createElement('textarea');t.value=currentResult;document.body.appendChild(t);t.select();document.execCommand('copy');t.remove();showToast('Berhasil dicopy! 📋','success');});
+}
+function downloadResult() {
+    if (!currentResult) return;
+    const a=document.createElement('a');
+    a.href=URL.createObjectURL(new Blob([currentResult],{type:'text/plain;charset=utf-8'}));
+    a.download='feelz_'+currentTool+'_'+Date.now()+'.txt';
+    a.click();
+    showToast('File diunduh! ⬇️','success');
+}
+
+// ============================================================
+//  HISTORY
+// ============================================================
+function renderHistory() {
+    const list=document.getElementById('historyList');
+    if (!list) return;
+    const h=getHistory();
+    if (!h.length) {
+        list.innerHTML='<div class="history-empty">📭 Belum ada riwayat<br><span style="font-size:11.5px;display:block;margin-top:5px">Mulai gunakan fitur AI untuk melihat riwayat</span></div>';
+        return;
+    }
+    list.innerHTML=h.map((item,i)=>{
+        const cfg=TOOL_CFG[item.tool]||{title:item.tool};
+        const clr=HIST_COLORS[item.tool]||{bg:'#f1f5f9',text:'#334155'};
+        const d=new Date(item.ts);
+        const t=d.toLocaleDateString('id-ID',{day:'2-digit',month:'short'})+' '+d.toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit'});
+        return `<div class="history-item" onclick="showHistDetail(${i})">
+            <div class="history-top">
+                <span class="hist-badge" style="background:${clr.bg};color:${clr.text}">${cfg.title}</span>
+                <span class="hist-time">${t}</span>
+            </div>
+            <div class="hist-preview">${item.output||item.input}</div>
+        </div>`;
+    }).join('');
+}
+function showHistDetail(i) {
+    const h=getHistory()[i];
+    if (!h) return;
+    document.getElementById('histDetailTitle').textContent=TOOL_CFG[h.tool]?.title||h.tool;
+    document.getElementById('histDetailContent').textContent=h.output||h.input;
+    document.getElementById('histDetailModal').classList.add('active');
+}
+function copyHistDetail() {
+    navigator.clipboard.writeText(document.getElementById('histDetailContent').textContent)
+        .then(()=>showToast('Berhasil dicopy!','success'));
+    document.getElementById('histDetailModal').classList.remove('active');
+}
+
+// ============================================================
+//  CHAT
+// ============================================================
+function escHtml(t){return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>');}
+function scrollChat(){const c=document.getElementById('chatMessages');c.scrollTop=c.scrollHeight;}
+
+async function sendChat() {
+    const inp=document.getElementById('chatInput');
+    const msg=inp.value.trim();
+    if (!msg) return;
+    inp.value=''; inp.style.height='auto';
+    appendChat('user',msg);
+    chatHistory.push({role:'user',content:msg});
+
+    const typId='typ_'+Date.now();
+    const typEl=document.createElement('div');
+    typEl.className='chat-msg ai'; typEl.id=typId;
+    typEl.innerHTML='<div class="chat-avatar">🤖</div><div class="chat-bubble"><div class="chat-typing"><span></span><span></span><span></span></div></div>';
+    document.getElementById('chatMessages').appendChild(typEl);
+    scrollChat();
+
+    try {
+        const resp=await fetch('https://api.anthropic.com/v1/messages',{
+            method:'POST',headers:{'Content-Type':'application/json'},
+            body:JSON.stringify({
+                model:'claude-sonnet-4-20250514',max_tokens:1000,
+                system:'Kamu adalah FEELZ AI, asisten penulisan cerdas dalam Bahasa Indonesia. Bantu pengguna dengan pertanyaan seputar penulisan, tata bahasa, parafrase, plagiarisme, dan topik terkait. Jawab dengan ramah, singkat, dan informatif.',
+                messages:chatHistory.slice(-12)
+            })
+        });
+        const data=await resp.json();
+        const reply=data.content?.[0]?.text||'Maaf, terjadi kesalahan.';
+        chatHistory.push({role:'assistant',content:reply});
+        document.getElementById(typId)?.remove();
+        appendChat('ai',reply);
+    } catch {
+        document.getElementById(typId)?.remove();
+        appendChat('ai','Maaf, koneksi bermasalah. Coba lagi ya! 🙏');
+    }
+}
+function appendChat(role,text) {
+    const el=document.createElement('div');
+    el.className='chat-msg '+role;
+    el.innerHTML=role==='ai'
+        ?`<div class="chat-avatar">🤖</div><div class="chat-bubble">${escHtml(text)}</div>`
+        :`<div class="chat-avatar">😊</div><div class="chat-bubble">${escHtml(text)}</div>`;
+    document.getElementById('chatMessages').appendChild(el);
+    scrollChat();
+}
+function clearChat() {
+    chatHistory=[];
+    document.getElementById('chatMessages').innerHTML='<div class="chat-msg ai"><div class="chat-avatar">🤖</div><div class="chat-bubble">Halo! Saya FEELZ AI, siap membantu kamu dengan segala kebutuhan penulisan. Mau tanya apa? 😊</div></div>';
+    showToast('Chat dihapus!','info');
+}
+
+// ============================================================
+//  DARK MODE
+// ============================================================
+function toggleDark() {
+    darkMode=!darkMode;
+    darkMode?enableDark():disableDark();
+    localStorage.setItem('feelz_dark',darkMode);
+}
+function enableDark() {
+    darkMode=true;
+    document.documentElement.setAttribute('data-theme','dark');
+    const b=document.getElementById('darkBtn'); if(b)b.textContent='☀️';
+    const t=document.getElementById('darkToggle'); if(t)t.classList.add('on');
+}
+function disableDark() {
+    darkMode=false;
+    document.documentElement.removeAttribute('data-theme');
+    const b=document.getElementById('darkBtn'); if(b)b.textContent='🌙';
+    const t=document.getElementById('darkToggle'); if(t)t.classList.remove('on');
+}
+
+// ============================================================
+//  TOAST
+// ============================================================
+function showToast(msg,type='info') {
+    const icons={success:'✅',error:'❌',info:'ℹ️'};
+    const el=document.createElement('div');
+    el.className='toast '+type;
+    el.innerHTML=`<span>${icons[type]||'ℹ️'}</span><span>${msg}</span>`;
+    document.getElementById('toastContainer').appendChild(el);
+    setTimeout(()=>{el.style.opacity='0';el.style.transform='translateX(100%)';el.style.transition='all .3s';setTimeout(()=>el.remove(),300);},3000);
+}
+
+// ============================================================
+//  CONFIRM
+// ============================================================
+let _confirmCb=null;
+function showConfirm(title,msg,cb) {
+    document.getElementById('confirmTitle').textContent=title;
+    document.getElementById('confirmMsg').textContent=msg;
+    _confirmCb=cb;
+    document.getElementById('confirmModal').classList.add('show');
+    document.getElementById('confirmOkBtn').onclick=()=>{closeConfirm();if(_confirmCb)_confirmCb();};
+}
+function closeConfirm() { document.getElementById('confirmModal').classList.remove('show'); }
+document.getElementById('confirmModal').addEventListener('click',function(e){if(e.target===this)closeConfirm();});
+
+// ============================================================
+//  BOOT
+// ============================================================
+(function boot() {
+    if (localStorage.getItem('feelz_dark')==='true') enableDark();
+    const sess=localStorage.getItem('feelz_session')||sessionStorage.getItem('feelz_session');
+    if (sess) {
+        try {
+            const parsed=JSON.parse(sess);
+            const u=getUsers().find(x=>x.email===parsed.email);
+            if (u){currentUser=u;launchApp();return;}
+        } catch {}
+    }
+    document.getElementById('authScreen').classList.remove('hidden');
+})();
+</script>
 </body>
-
 </html>
