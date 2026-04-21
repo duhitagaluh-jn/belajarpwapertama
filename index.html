@@ -7,10 +7,11 @@
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="theme-color" content="#6366f1" />
-    <link rel="icon" href="icons/icon-192x192-A.png" type="image/png" />
-    <link rel="manifest" href="manifest.json">
-    <title>TaskFlow - Kelola Tugas Anda</title>
+    <meta name="theme-color" content="#1856bb" />
+    <!-- Tempat untuk icon dan manifest (sesuaikan path file kamu) -->
+    <!-- <link rel="icon" href="icons/icon-192x192-A.png" type="image/png" /> -->
+    <!-- <link rel="manifest" href="manifest.json"> -->
+    <title>FEELZ - AI Writing Assistant</title>
     <style>
         * {
             margin: 0;
@@ -19,9 +20,9 @@
         }
 
         :root {
-            --primary: #6366f1;
-            --primary-dark: #4f46e5;
-            --primary-light: #818cf8;
+            --primary: #3b82f6;
+            --primary-dark: #2563eb;
+            --primary-light: #60a5fa;
             --bg-dark: #ffffff;
             --bg-card: #1e293b;
             --text-light: #f8fafc;
@@ -33,21 +34,54 @@
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, var(--bg-dark) 0%, #1856bb 100%);
-            color: var(--text-light);
+            background: linear-gradient(135deg, #eef2ff 0%, #1856bb 100%);
+            color: #1e293b;
             min-height: 100vh;
             padding-bottom: 80px;
+        }
+
+        body.dark {
+            background: linear-gradient(135deg, #0f172a 0%, #0f2b4f 100%);
+            color: #f1f5f9;
+        }
+
+        body.dark .header,
+        body.dark .input-section,
+        body.dark .feature-card,
+        body.dark .history-item,
+        body.dark .auth-card,
+        body.dark .modal-content,
+        body.dark .chat-message,
+        body.dark .bottom-nav,
+        body.dark .progress-usage {
+            background: #1e293b;
+            color: #f1f5f9;
+        }
+
+        body.dark .result-box {
+            background: #334155;
+        }
+
+        body.dark input,
+        body.dark textarea {
+            background: #0f172a;
+            color: white;
+            border-color: #475569;
         }
 
         .header {
             background: #1856bb;
             backdrop-filter: blur(10px);
-            padding: 20px;
+            padding: 16px 20px;
             position: sticky;
             top: 0;
             z-index: 100;
-            border-bottom: 1px solid rgba(99, 102, 241, 0.2);
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        body.dark .header {
+            background: #0f2b4f;
         }
 
         .header-content {
@@ -67,36 +101,37 @@
         .logo-icon {
             width: 40px;
             height: 40px;
-            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            background: white;
             border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 24px;
-            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .logo-icon img {
+            width: 32px;
+            height: 32px;
+            object-fit: contain;
         }
 
         h1 {
             font-size: 24px;
             font-weight: 700;
+            color: white;
         }
 
         .stats {
             display: flex;
             gap: 16px;
             font-size: 14px;
-            color: var(--text-gray);
-        }
-
-        .stat-item {
-            display: flex;
-            align-items: center;
-            gap: 6px;
+            color: #e2e8f0;
         }
 
         .stat-number {
-            color: var(--primary-light);
             font-weight: 700;
+            color: #facc15;
         }
 
         .container {
@@ -105,487 +140,752 @@
             padding: 24px 20px;
         }
 
-        .input-section {
-            background: var(--bg-card);
-            padding: 24px;
-            border-radius: 16px;
-            margin-bottom: 24px;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
-            border: 1px solid rgba(99, 102, 241, 0.1);
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+            gap: 16px;
+            margin: 20px 0;
         }
 
-        .input-group {
+        .feature-card {
+            background: white;
+            border-radius: 28px;
+            padding: 16px 8px;
+            text-align: center;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+            cursor: pointer;
+            transition: transform 0.15s;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        body.dark .feature-card {
+            background: #1e293b;
+            border-color: #334155;
+        }
+
+        .feature-card:active {
+            transform: scale(0.96);
+        }
+
+        .feature-icon {
+            font-size: 32px;
+            background: #dbeafe;
+            width: 56px;
+            height: 56px;
             display: flex;
-            gap: 12px;
-            margin-bottom: 16px;
+            margin: 0 auto 12px;
+            align-items: center;
+            justify-content: center;
+            border-radius: 30px;
         }
 
-        input[type="text"] {
-            flex: 1;
-            padding: 14px 18px;
-            background: var(--bg-dark);
-            border: 2px solid rgba(99, 102, 241, 0.3);
-            border-radius: 12px;
-            color: var(--text-light);
+        body.dark .feature-icon {
+            background: #334155;
+        }
+
+        .input-section,
+        .auth-card {
+            background: white;
+            border-radius: 24px;
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        input,
+        textarea {
+            width: 100%;
+            padding: 14px;
+            border-radius: 28px;
+            border: 1px solid #cbd5e1;
             font-size: 16px;
-            transition: all 0.3s ease;
-        }
-
-        input[type="text"]:focus {
-            outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
+            margin-bottom: 14px;
         }
 
         .btn {
-            padding: 14px 28px;
+            padding: 12px 24px;
+            border-radius: 40px;
             border: none;
-            border-radius: 12px;
-            font-size: 16px;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .btn-primary {
-            background: linear-gradient(135deg, var(--primary), var(--primary-light));
-            color: white;
-            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(99, 102, 241, 0.5);
-        }
-
-        .btn-primary:active {
-            transform: translateY(0);
-        }
-
-        .priority-selector {
-            display: flex;
-            gap: 8px;
-        }
-
-        .priority-btn {
-            flex: 1;
-            padding: 10px;
-            border: 2px solid rgba(255, 255, 255, 0.1);
-            background: transparent;
-            color: var(--text-gray);
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-size: 14px;
-        }
-
-        .priority-btn.active {
-            border-color: currentColor;
-            background: rgba(255, 255, 255, 0.1);
-            font-weight: 600;
-        }
-
-        .priority-btn.high {
-            color: var(--danger);
-        }
-
-        .priority-btn.medium {
-            color: var(--warning);
-        }
-
-        .priority-btn.low {
-            color: var(--success);
-        }
-
-        .filter-tabs {
-            display: flex;
-            gap: 8px;
-            margin-bottom: 20px;
-            overflow-x: auto;
-            padding-bottom: 4px;
-        }
-
-        .filter-tab {
-            padding: 10px 20px;
-            background: var(--bg-card);
-            border: 2px solid transparent;
-            border-radius: 20px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            white-space: nowrap;
-            font-size: 14px;
-            font-weight: 500;
-            color: #ffffff;
-        }
-
-        .filter-tab.active {
             background: var(--primary);
-            border-color: var(--primary-light);
-            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+            color: white;
+            font-size: 14px;
+            transition: 0.2s;
         }
 
-        .tasks-list {
+        .btn-outline {
+            background: transparent;
+            border: 1px solid #cbd5e1;
+            color: #1e293b;
+        }
+
+        body.dark .btn-outline {
+            border-color: #475569;
+            color: #f1f5f9;
+        }
+
+        .result-box {
+            background: #eef2ff;
+            padding: 16px;
+            border-radius: 20px;
+            margin: 16px 0;
+            white-space: pre-wrap;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 90px;
+            left: 20px;
+            right: 20px;
+            background: #323232;
+            color: white;
+            padding: 12px;
+            border-radius: 40px;
+            text-align: center;
+            z-index: 3000;
+            opacity: 0;
+            transition: 0.2s;
+            pointer-events: none;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid white;
+            border-top-color: transparent;
+            border-radius: 50%;
+            animation: spin 0.6s linear infinite;
+            margin-right: 8px;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(4px);
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            z-index: 2000;
+            visibility: hidden;
+            opacity: 0;
+            transition: 0.2s;
+        }
+
+        .modal.active {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        .modal-content {
+            background: white;
+            width: 100%;
+            max-width: 600px;
+            border-radius: 32px 32px 0 0;
+            padding: 24px;
+            max-height: 85vh;
+            overflow-y: auto;
+            border-top: 4px solid var(--primary);
+        }
+
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            backdrop-filter: blur(12px);
+            border-top: 1px solid #e2e8f0;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding: 10px 16px 20px;
+            z-index: 1000;
+            max-width: 800px;
+            margin: 0 auto;
+            box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        body.dark .bottom-nav {
+            background: #1e293b;
+            border-top-color: #334155;
+        }
+
+        .nav-item {
             display: flex;
             flex-direction: column;
-            gap: 12px;
-        }
-
-        .task-item {
-            background: var(--bg-card);
-            padding: 20px;
-            border-radius: 12px;
-            border-left: 4px solid;
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            transition: all 0.3s ease;
-            animation: slideIn 0.3s ease;
-        }
-
-        @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: translateY(-10px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .task-item:hover {
-            transform: translateX(4px);
-            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
-        }
-
-        .task-item.high {
-            border-left-color: var(--danger);
-        }
-
-        .task-item.medium {
-            border-left-color: var(--warning);
-        }
-
-        .task-item.low {
-            border-left-color: var(--success);
-        }
-
-        .task-checkbox {
-            width: 24px;
-            height: 24px;
-            border: 2px solid var(--primary);
-            border-radius: 6px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-            transition: all 0.3s ease;
-        }
-
-        .task-checkbox:hover {
-            background: rgba(99, 102, 241, 0.1);
-        }
-
-        .task-checkbox.checked {
-            background: var(--primary);
-        }
-
-        .task-content {
-            flex: 1;
-        }
-
-        .task-text {
-            font-size: 16px;
-            margin-bottom: 4px;
-        }
-
-        .task-text.completed {
-            text-decoration: line-through;
-            opacity: 0.6;
-        }
-
-        .task-meta {
-            display: flex;
-            gap: 12px;
-            font-size: 12px;
-            color: var(--text-gray);
-        }
-
-        .task-time {
-            display: flex;
             align-items: center;
             gap: 4px;
-        }
-
-        .task-actions {
-            display: flex;
-            gap: 8px;
-        }
-
-        .btn-icon {
-            width: 36px;
-            height: 36px;
+            background: none;
             border: none;
-            border-radius: 8px;
+            font-size: 12px;
+            color: #64748b;
             cursor: pointer;
+            font-weight: 500;
+        }
+
+        .nav-item.active {
+            color: var(--primary);
+        }
+
+        .page {
+            display: none;
+        }
+
+        .page.active-page {
+            display: block;
+        }
+
+        .history-item {
+            background: white;
+            border-radius: 20px;
+            padding: 16px;
+            margin-bottom: 12px;
+            border-left: 5px solid var(--primary);
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+        }
+
+        .chat-message {
+            background: #eef2ff;
+            border-radius: 20px;
+            padding: 12px;
+            margin: 10px 0;
+        }
+
+        .chat-user {
+            background: var(--primary);
+            color: white;
+            text-align: right;
+        }
+
+        .progress-usage {
+            background: white;
+            border-radius: 20px;
+            padding: 12px;
+            margin-top: 12px;
+        }
+
+        .flex-between {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .float-ai {
+            position: fixed;
+            bottom: 85px;
+            right: 20px;
+            background: var(--primary);
+            width: 56px;
+            height: 56px;
+            border-radius: 28px;
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: all 0.3s ease;
-            font-size: 18px;
-        }
-
-        .btn-delete {
-            background: rgba(239, 68, 68, 0.1);
-            color: var(--danger);
-        }
-
-        .btn-delete:hover {
-            background: var(--danger);
+            font-size: 28px;
+            box-shadow: 0 6px 14px rgba(0, 0, 0, 0.2);
+            cursor: pointer;
+            z-index: 1001;
+            border: none;
             color: white;
-        }
-
-        .empty-state {
-            text-align: center;
-            padding: 60px 20px;
-            color: var(--text-gray);
-        }
-
-        .empty-icon {
-            font-size: 64px;
-            margin-bottom: 16px;
-            opacity: 0.5;
-        }
-
-        .progress-bar {
-            background: var(--bg-card);
-            height: 8px;
-            border-radius: 4px;
-            overflow: hidden;
-            margin: 16px 0;
-        }
-
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, var(--primary), var(--primary-light));
-            transition: width 0.5s ease;
-            border-radius: 4px;
         }
 
         @media (max-width: 640px) {
-            .header-content {
-                flex-direction: column;
-                gap: 12px;
+            .feature-grid {
+                grid-template-columns: repeat(3, 1fr);
             }
-
-            .input-group {
-                flex-direction: column;
-            }
-
-            .stats {
-                width: 100%;
-                justify-content: space-around;
-            }
-        }
-
-        .logo h1 {
-            font-size: 50px;
-            font-weight: 800;
         }
     </style>
 </head>
 
 <body>
-    <header class="header">
-        <div class="header-content">
-            <div class="logo">
-                <div class="logo-icon">✓</div>
-                <h1 class="text-judul">TaskFlow</h1>
-            </div>
-            <div class="stats">
-                <div class="stat-item">
-                    <span>📝</span>
-                    <span>Total: <span class="stat-number" id="totalTasks">0</span></span>
+    <!-- Auth Screen -->
+    <div id="authScreen">
+        <div class="container">
+            <div class="auth-card" id="loginForm">
+                <div style="text-align:center; margin-bottom:20px;">
+                    <div class="logo-icon" style="margin:0 auto 12px; background:#3b82f6;">
+                        <span style="color:white; font-size:28px;">✨</span>
+                    </div>
+                    <h2 style="margin:0;">✍️ FEELZ</h2>
+                    <p>AI Writing Assistant</p>
                 </div>
-                <div class="stat-item">
-                    <span>✅</span>
-                    <span>Selesai: <span class="stat-number" id="completedTasks">0</span></span>
+                <input type="email" id="loginEmail" placeholder="Email">
+                <input type="password" id="loginPassword" placeholder="Password">
+                <div class="flex-between" style="margin-bottom:20px;">
+                    <label><input type="checkbox" id="rememberMeCheckbox"> Ingat saya</label>
+                    <button class="btn-outline btn" id="forgotPasswordBtn" style="padding:6px 12px;">Lupa password?</button>
                 </div>
+                <button class="btn" id="doLoginBtn" style="width:100%">Masuk</button>
+                <p style="text-align:center; margin-top:16px;">Belum punya akun? <strong id="showRegisterBtn"
+                        style="color:var(--primary);cursor:pointer;">Daftar</strong></p>
+            </div>
+            <div class="auth-card" id="registerForm" style="display:none;">
+                <div style="text-align:center; margin-bottom:20px;">
+                    <div class="logo-icon" style="margin:0 auto 12px; background:#3b82f6;">
+                        <span style="color:white; font-size:28px;">✨</span>
+                    </div>
+                    <h2>📝 Daftar FEELZ</h2>
+                </div>
+                <input type="text" id="regName" placeholder="Nama Lengkap">
+                <input type="email" id="regEmail" placeholder="Email">
+                <input type="password" id="regPassword" placeholder="Password (min 6 karakter)">
+                <button class="btn" id="doRegisterBtn" style="width:100%">Daftar</button>
+                <p style="text-align:center; margin-top:16px;">Sudah punya akun? <strong id="showLoginBtn"
+                        style="color:var(--primary);cursor:pointer;">Masuk</strong></p>
             </div>
         </div>
-    </header>
-
-    <div class="container">
-        <div class="input-section">
-            <div class="input-group">
-                <input type="text" id="taskInput" placeholder="Tambahkan tugas baru..."
-                    onkeypress="if(event.key==='Enter') addTask()" />
-                <button class="btn btn-primary" onclick="addTask()">
-                    <span>➕</span>
-                    <span>Tambah</span>
-                </button>
-            </div>
-            <div class="priority-selector">
-                <button class="priority-btn high" onclick="setPriority('high')">🔴 Tinggi</button>
-                <button class="priority-btn medium active" onclick="setPriority('medium')">🟡 Sedang</button>
-                <button class="priority-btn low" onclick="setPriority('low')">🟢 Rendah</button>
-            </div>
-            <div class="progress-bar">
-                <div class="progress-fill" id="progressBar" style="width: 0%"></div>
-            </div>
-        </div>
-
-        <div class="filter-tabs">
-            <button class="filter-tab active" onclick="filterTasks('all')">Semua</button>
-            <button class="filter-tab" onclick="filterTasks('active')">Aktif</button>
-            <button class="filter-tab" onclick="filterTasks('completed')">Selesai</button>
-            <button class="filter-tab" onclick="filterTasks('high')">🔴 Prioritas Tinggi</button>
-            <button class="filter-tab" onclick="filterTasks('medium')">🟡 Prioritas Sedang</button>
-            <button class="filter-tab" onclick="filterTasks('low')">🟢 Prioritas Rendah</button>
-        </div>
-
-        <div class="tasks-list" id="tasksList"></div>
     </div>
 
+    <!-- Main App -->
+    <div id="mainApp" style="display:none;">
+        <header class="header">
+            <div class="header-content">
+                <div class="logo">
+                    <div class="logo-icon">
+                        <span>✨</span>
+                    </div>
+                    <h1>FEELZ</h1>
+                </div>
+                <div class="stats">
+                    <div class="stat-item">
+                        <span>📊</span>
+                        <span>Hari ini: <span class="stat-number" id="usageCount">0</span>/15</span>
+                    </div>
+                    <button id="globalDarkToggle"
+                        style="background:none; border:none; font-size:20px; cursor:pointer;">🌙</button>
+                </div>
+            </div>
+        </header>
+
+        <div class="container">
+            <!-- Pages -->
+            <div id="homePage" class="page active-page">
+                <div class="input-section" style="background:#eef2ff; text-align:center;">
+                    <p id="dailyTip" style="font-weight:500;">💡 Tips: Gunakan AI untuk tingkatkan tulisanmu</p>
+                    <div class="progress-usage">
+                        <div class="flex-between"><span>🎯 Kuota AI hari ini</span><span id="usageCount2">0</span>/15
+                        </div>
+                        <div style="background:#cbd5e1; border-radius:12px; margin-top:6px; height:8px;">
+                            <div id="usageBar" style="width:0%; background:var(--primary); height:8px; border-radius:12px;"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="feature-grid" id="featureGrid"></div>
+            </div>
+
+            <div id="riwayatPage" class="page">
+                <h2>📜 Riwayat Hasil AI</h2>
+                <div id="historyList" style="margin-top:16px;">Memuat...</div>
+            </div>
+
+            <div id="aiChatPage" class="page">
+                <h2>🤖 AI Chat Assistant</h2>
+                <div id="chatMessages"
+                    style="height: 55vh; overflow-y: auto; background:#f8fafc; border-radius: 28px; padding: 16px; margin:12px 0;">
+                </div>
+                <div style="display:flex; gap:8px;">
+                    <input type="text" id="chatInput" placeholder="Tanya tentang menulis, parafrase, dll...">
+                    <button id="sendChatBtn" class="btn">Kirim</button>
+                </div>
+            </div>
+
+            <div id="profilPage" class="page">
+                <h2>👤 Profil Saya</h2>
+                <div style="background:white; border-radius: 32px; padding:20px;">
+                    <p><strong>Nama:</strong> <span id="profileName">-</span></p>
+                    <p><strong>Email:</strong> <span id="profileEmail">-</span></p>
+                    <button id="editProfileBtn" class="btn-outline btn" style="margin-top:12px;">✏️ Edit Profil</button>
+                    <button id="logoutBtn" class="btn-outline btn" style="margin-top:12px; background:#ef4444; color:white;">🚪
+                        Logout</button>
+                </div>
+            </div>
+
+            <div id="settingsPage" class="page">
+                <h2>⚙️ Pengaturan</h2>
+                <div style="background:white; border-radius: 32px; padding:20px;">
+                    <div class="flex-between"><span>🌙 Mode Gelap</span> <label><input type="checkbox"
+                                id="darkModeToggle"> Toggle</label></div>
+                    <hr style="margin:16px 0;">
+                    <button id="clearHistoryBtn" class="btn-outline btn">Hapus Semua Riwayat</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bottom Navigation -->
+        <div class="bottom-nav">
+            <button class="nav-item" data-page="homePage">🏠<span>Beranda</span></button>
+            <button class="nav-item" data-page="riwayatPage">📋<span>Riwayat</span></button>
+            <button class="nav-item" data-page="aiChatPage">💬<span>AI Chat</span></button>
+            <button class="nav-item" data-page="profilPage">👤<span>Profil</span></button>
+            <button class="nav-item" data-page="settingsPage">⚙️<span>Setelan</span></button>
+        </div>
+        <button class="float-ai" id="floatingAskAi">✨💬</button>
+    </div>
+
+    <div id="toastMsg" class="toast"></div>
+
     <script>
-        let tasks = [];
-        let currentPriority = 'medium';
-        let currentFilter = 'all';
+        (function () {
+            // ---------- DATA & STORAGE ----------
+            let currentUser = null;
+            let users = JSON.parse(localStorage.getItem('feelz_users')) || [];
+            let historyEntries = JSON.parse(localStorage.getItem('feelz_history')) || [];
+            let dailyUsage = JSON.parse(localStorage.getItem('feelz_daily_usage')) || { date: new Date().toDateString(), count: 0 };
+            const DAILY_LIMIT = 15;
 
-        function loadTasks() {
-            const saved = localStorage.getItem('taskflow_tasks');
-            if (saved) {
-                tasks = JSON.parse(saved);
-                renderTasks();
-            }
-        }
+            function saveUsers() { localStorage.setItem('feelz_users', JSON.stringify(users)); }
+            function saveHistory() { localStorage.setItem('feelz_history', JSON.stringify(historyEntries)); }
+            function saveDailyUsage() { localStorage.setItem('feelz_daily_usage', JSON.stringify(dailyUsage)); }
 
-        function saveTasks() {
-            localStorage.setItem('taskflow_tasks', JSON.stringify(tasks));
-        }
-
-        function setPriority(priority) {
-            currentPriority = priority;
-            document.querySelectorAll('.priority-btn').forEach(btn => {
-                btn.classList.remove('active');
-            });
-            event.target.classList.add('active');
-        }
-
-        function addTask() {
-            const input = document.getElementById('taskInput');
-            const text = input.value.trim();
-
-            if (text === '') return;
-
-            const task = {
-                id: Date.now(),
-                text: text,
-                completed: false,
-                priority: currentPriority,
-                createdAt: new Date().toLocaleString('id-ID')
-            };
-
-            tasks.unshift(task);
-            input.value = '';
-            saveTasks();
-            renderTasks();
-        }
-
-        function toggleTask(id) {
-            const task = tasks.find(t => t.id === id);
-            if (task) {
-                task.completed = !task.completed;
-                saveTasks();
-                renderTasks();
-            }
-        }
-
-        function deleteTask(id) {
-            tasks = tasks.filter(t => t.id !== id);
-            saveTasks();
-            renderTasks();
-        }
-
-        function filterTasks(filter) {
-            currentFilter = filter;
-            document.querySelectorAll('.filter-tab').forEach(tab => {
-                tab.classList.remove('active');
-            });
-            event.target.classList.add('active');
-            renderTasks();
-        }
-
-        function renderTasks() {
-            const container = document.getElementById('tasksList');
-
-            let filteredTasks = tasks;
-
-            if (currentFilter === 'active') {
-                filteredTasks = tasks.filter(t => !t.completed);
-            } else if (currentFilter === 'completed') {
-                filteredTasks = tasks.filter(t => t.completed);
-            } else if (['high', 'medium', 'low'].includes(currentFilter)) {
-                filteredTasks = tasks.filter(t => t.priority === currentFilter);
+            function updateDailyUsageUI() {
+                const today = new Date().toDateString();
+                if (dailyUsage.date !== today) {
+                    dailyUsage = { date: today, count: 0 };
+                    saveDailyUsage();
+                }
+                const usageSpans = document.querySelectorAll('#usageCount, #usageCount2');
+                usageSpans.forEach(span => { if (span) span.innerText = dailyUsage.count; });
+                const percent = (dailyUsage.count / DAILY_LIMIT) * 100;
+                const bar = document.getElementById('usageBar');
+                if (bar) bar.style.width = Math.min(percent, 100) + '%';
             }
 
-            if (filteredTasks.length === 0) {
-                container.innerHTML = `
-          <div class="empty-state">
-            <div class="empty-icon">📋</div>
-            <h3>Tidak ada tugas</h3>
-            <p>Mulai tambahkan tugas baru untuk memulai!</p>
-          </div>
-        `;
-            } else {
-                container.innerHTML = filteredTasks.map(task => `
-          <div class="task-item ${task.priority}">
-            <div class="task-checkbox ${task.completed ? 'checked' : ''}" onclick="toggleTask(${task.id})">
-              ${task.completed ? '✓' : ''}
-            </div>
-            <div class="task-content">
-              <div class="task-text ${task.completed ? 'completed' : ''}">${task.text}</div>
-              <div class="task-meta">
-                <span class="task-time">🕒 ${task.createdAt}</span>
-                <span>📌 ${task.priority === 'high' ? 'Tinggi' : task.priority === 'medium' ? 'Sedang' : 'Rendah'}</span>
-              </div>
-            </div>
-            <div class="task-actions">
-              <button class="btn-icon btn-delete" onclick="deleteTask(${task.id})">🗑️</button>
-            </div>
-          </div>
-        `).join('');
+            function incrementUsage() {
+                if (!currentUser) return;
+                const today = new Date().toDateString();
+                if (dailyUsage.date !== today) dailyUsage = { date: today, count: 0 };
+                dailyUsage.count++;
+                saveDailyUsage();
+                updateDailyUsageUI();
+                if (dailyUsage.count > DAILY_LIMIT) showToast("⚠️ Kuota harian habis (demo tetap jalan)", 2500);
             }
 
-            updateStats();
-        }
+            function showToast(msg, time = 2000) {
+                const toast = document.getElementById('toastMsg');
+                toast.innerText = msg;
+                toast.style.opacity = '1';
+                setTimeout(() => toast.style.opacity = '0', time);
+            }
 
-        function updateStats() {
-            const total = tasks.length;
-            const completed = tasks.filter(t => t.completed).length;
-            const progress = total > 0 ? (completed / total) * 100 : 0;
+            function addHistory(feature, inputText, outputText) {
+                if (!currentUser) return;
+                historyEntries.push({ id: Date.now(), userId: currentUser.email, feature, inputText, outputText, timestamp: new Date().toLocaleString() });
+                saveHistory();
+                renderRiwayat();
+            }
 
-            document.getElementById('totalTasks').textContent = total;
-            document.getElementById('completedTasks').textContent = completed;
-            document.getElementById('progressBar').style.width = progress + '%';
-        }
+            function renderRiwayat() {
+                const container = document.getElementById('historyList');
+                if (!container) return;
+                const userHistory = historyEntries.filter(h => h.userId === currentUser?.email);
+                if (userHistory.length === 0) { container.innerHTML = '<div class="history-item">Belum ada riwayat.</div>'; return; }
+                container.innerHTML = userHistory.slice().reverse().map(h => `
+                    <div class="history-item">
+                        <strong>${h.feature}</strong> <span style="font-size:12px; color:gray;">${h.timestamp}</span><br/>
+                        <span>Input: ${h.inputText.substring(0, 70)}...</span><br/>
+                        📌 Hasil: ${h.outputText.substring(0, 100)}
+                    </div>
+                `).join('');
+            }
 
-        loadTasks();
+            // ======================== FITUR AI YANG DIPERBAIKI ========================
+            // Terjemahan (Indonesia -> Inggris) simulasi dengan kamus sederhana
+            function translateTextIndoToEnglish(text) {
+                // Kamus sederhana kata umum
+                const dict = {
+                    'saya': 'I', 'aku': 'I', 'kamu': 'you', 'anda': 'you', 'dia': 'he/she',
+                    'mereka': 'they', 'kita': 'we', 'kami': 'we', 'ini': 'this', 'itu': 'that',
+                    'dan': 'and', 'atau': 'or', 'tapi': 'but', 'karena': 'because', 'jadi': 'so',
+                    'baik': 'good', 'buruk': 'bad', 'besar': 'big', 'kecil': 'small', 'cepat': 'fast',
+                    'lambat': 'slow', 'makan': 'eat', 'minum': 'drink', 'pergi': 'go', 'datang': 'come',
+                    'lihat': 'see', 'dengar': 'hear', 'bicara': 'talk', 'tulis': 'write', 'baca': 'read',
+                    'senang': 'happy', 'sedih': 'sad', 'marah': 'angry', 'takut': 'afraid', 'cinta': 'love'
+                };
+                let words = text.toLowerCase().split(/\s+/);
+                let translatedWords = words.map(word => {
+                    let clean = word.replace(/[.,!?;:]$/, '');
+                    let punct = word.match(/[.,!?;:]$/) ? word.slice(-1) : '';
+                    let trans = dict[clean] || clean;
+                    if (trans === clean && clean.length > 2) {
+                        // jika tidak ada di kamus, tambahkan '?' sebagai tanda demo
+                        trans = trans + '?';
+                    }
+                    return trans + punct;
+                });
+                let result = translatedWords.join(' ');
+                // Kapitalisasi awal kalimat
+                result = result.charAt(0).toUpperCase() + result.slice(1);
+                return `🌐 Terjemahan (Indonesia → Inggris):\n${result}\n\n(Simulasi AI - untuk akurasi lebih tinggi gunakan API terjemahan)`;
+            }
 
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('./service-worker.js')
-                    .then(() => console.log('Service Worker registered'))
-                    .catch(err => console.error('Service Worker error:', err));
-            });
-        }
+            async function processWithAI(feature, text) {
+                if (!text.trim()) throw new Error("Teks kosong");
+                incrementUsage();
+                await new Promise(r => setTimeout(r, 1200));
+                switch (feature) {
+                    case 'AI Editor': return fixGrammar(text);
+                    case 'Parafrase': return paraphraseText(text);
+                    case 'Cek Plagiarisme': return `🔍 Hasil Cek Plagiarisme: ${Math.floor(Math.random() * 31)}% kemiripan.\n${Math.random() > 0.5 ? 'Teks cukup original.' : 'Saran: lakukan parafrase ulang.'}`;
+                    case 'Ringkas Teks': return summarizeText(text);
+                    case 'Terjemahan': return translateTextIndoToEnglish(text);
+                    case 'Analisis Teks': return analyzeText(text);
+                    default: return "Proses selesai.";
+                }
+            }
+
+            function fixGrammar(t) {
+                let fixed = t.trim();
+                if (fixed) fixed = fixed.charAt(0).toUpperCase() + fixed.slice(1);
+                if (!/[.!?]$/.test(fixed)) fixed += '.';
+                fixed = fixed.replace(/\s+/g, ' ');
+                return `✍️ Editor AI: ${fixed}`;
+            }
+
+            function paraphraseText(t) {
+                let words = t.split(' ');
+                if (words.length < 3) return `🔄 Parafrase: ${t}`;
+                let shuffled = [...words];
+                for (let i = shuffled.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+                }
+                return `🔄 Parafrase (susunan ulang): ${shuffled.join(' ')}\n💡 Gunakan sinonim untuk hasil maksimal.`;
+            }
+
+            function summarizeText(t) {
+                let sentences = t.split(/[.!?]+/).filter(s => s.trim().length > 10);
+                if (sentences.length === 0) return t.substring(0, 100) + "...";
+                return `📄 Ringkasan: ${sentences.slice(0, 2).join('. ')}.`;
+            }
+
+            function analyzeText(t) {
+                const words = t.split(/\s+/).length;
+                const chars = t.length;
+                let formality = (t.match(/\b(saya|aku|kamu)\b/i)) ? 35 : 65;
+                return `📊 Analisis: ${words} kata, ${chars} karakter, Formalitas: ${formality}/100. ${formality < 50 ? 'Santai' : 'Formal'}.`;
+            }
+
+            // Modal untuk semua fitur
+            function openFeatureModal(featureName) {
+                const modalDiv = document.createElement('div');
+                modalDiv.className = 'modal';
+                modalDiv.innerHTML = `
+                    <div class="modal-content">
+                        <h3>${featureName}</h3>
+                        <textarea id="modalInput" rows="4" placeholder="Tulis teks di sini..."></textarea>
+                        <div style="display:flex; gap:12px; margin:16px 0;">
+                            <button id="modalProcessBtn" class="btn">⚡ Proses</button>
+                            <button id="modalCloseBtn" class="btn-outline btn">Tutup</button>
+                        </div>
+                        <div id="modalResult" class="result-box" style="display:none;"></div>
+                        <div id="modalActionBtns" style="display:flex; gap:12px;"></div>
+                    </div>
+                `;
+                document.body.appendChild(modalDiv);
+                setTimeout(() => modalDiv.classList.add('active'), 10);
+                const processBtn = modalDiv.querySelector('#modalProcessBtn');
+                const closeBtn = modalDiv.querySelector('#modalCloseBtn');
+                const resultDiv = modalDiv.querySelector('#modalResult');
+                const actionDiv = modalDiv.querySelector('#modalActionBtns');
+                let currentOutput = '';
+                processBtn.onclick = async () => {
+                    const inputText = modalDiv.querySelector('#modalInput').value;
+                    if (!inputText.trim()) { showToast("Harap isi teks"); return; }
+                    processBtn.innerHTML = '<span class="loading"></span> Memproses...';
+                    processBtn.disabled = true;
+                    try {
+                        const output = await processWithAI(featureName, inputText);
+                        currentOutput = output;
+                        resultDiv.style.display = 'block';
+                        resultDiv.innerText = output;
+                        actionDiv.innerHTML = `<button class="btn-outline btn" id="copyResultBtn">📋 Salin</button><button class="btn-outline btn" id="downloadResultBtn">⬇️ Download</button>`;
+                        document.getElementById('copyResultBtn')?.addEventListener('click', () => { navigator.clipboard.writeText(currentOutput); showToast("Tersalin!"); });
+                        document.getElementById('downloadResultBtn')?.addEventListener('click', () => { const blob = new Blob([currentOutput], { type: 'text/plain' }); const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'feelz_result.txt'; a.click(); });
+                        addHistory(featureName, inputText, output);
+                    } catch (e) { showToast(e.message); }
+                    finally { processBtn.innerHTML = '⚡ Proses'; processBtn.disabled = false; }
+                };
+                closeBtn.onclick = () => modalDiv.remove();
+            }
+
+            // Chat AI
+            function addChatMessage(role, text) {
+                const container = document.getElementById('chatMessages');
+                const msgDiv = document.createElement('div');
+                msgDiv.className = `chat-message ${role === 'user' ? 'chat-user' : ''}`;
+                msgDiv.innerHTML = `<strong>${role === 'user' ? 'Anda' : 'AI Feelz'}</strong><br/>${text}`;
+                container.appendChild(msgDiv);
+                container.scrollTop = container.scrollHeight;
+            }
+            async function sendChatMessage() {
+                const input = document.getElementById('chatInput');
+                const q = input.value.trim();
+                if (!q) return;
+                addChatMessage('user', q);
+                input.value = '';
+                incrementUsage();
+                addChatMessage('ai', '⏳ Mengetik...');
+                await new Promise(r => setTimeout(r, 1000));
+                const lastMsg = document.querySelector('#chatMessages .chat-message:last-child');
+                let answer = `🤖 Halo! Saya AI Feelz. ${q.includes('parafrase') ? 'Gunakan fitur Parafrase di beranda.' : q.includes('terjemah') ? 'Fitur Terjemahan sudah tersedia, coba masukkan teks Indonesia.' : q.includes('ringkas') ? 'Coba fitur Ringkas Teks.' : 'Saya siap membantu menulis, grammar, parafrase, analisis, dan terjemahan.'}`;
+                lastMsg.innerHTML = `<strong>AI Feelz</strong><br/>${answer}`;
+            }
+
+            // ======================== AUTHENTICATION ========================
+            function registerUser(name, email, password) {
+                if (!email.includes('@')) throw new Error('Email tidak valid');
+                if (password.length < 6) throw new Error('Password minimal 6 karakter');
+                if (users.find(u => u.email === email)) throw new Error('Email sudah terdaftar');
+                users.push({ name, email, password });
+                saveUsers();
+                showToast('Registrasi berhasil, silakan login');
+            }
+            function loginUser(email, password, remember) {
+                const user = users.find(u => u.email === email && u.password === password);
+                if (!user) throw new Error('Email atau password salah');
+                currentUser = user;
+                if (remember) localStorage.setItem('feelz_remember', JSON.stringify({ email, password }));
+                else localStorage.removeItem('feelz_remember');
+                localStorage.setItem('feelz_current', JSON.stringify({ email: user.email }));
+                showAppAfterLogin();
+            }
+            function logout() {
+                currentUser = null;
+                localStorage.removeItem('feelz_current');
+                localStorage.removeItem('feelz_remember');
+                document.getElementById('mainApp').style.display = 'none';
+                document.getElementById('authScreen').style.display = 'block';
+                location.reload();
+            }
+            function showAppAfterLogin() {
+                const stored = localStorage.getItem('feelz_current');
+                if (stored) {
+                    const { email } = JSON.parse(stored);
+                    currentUser = users.find(u => u.email === email);
+                    if (!currentUser) return;
+                } else return;
+                document.getElementById('authScreen').style.display = 'none';
+                document.getElementById('mainApp').style.display = 'block';
+                updateDailyUsageUI();
+                renderRiwayat();
+                renderProfile();
+                initFeatures();
+                loadTip();
+            }
+            function renderProfile() {
+                if (currentUser) {
+                    document.getElementById('profileName').innerText = currentUser.name;
+                    document.getElementById('profileEmail').innerText = currentUser.email;
+                }
+            }
+            function editProfile() {
+                let newName = prompt("Nama baru", currentUser.name);
+                if (newName && newName.trim()) currentUser.name = newName.trim();
+                let newEmail = prompt("Email baru", currentUser.email);
+                if (newEmail && newEmail.includes('@') && !users.find(u => u.email === newEmail && u.email !== currentUser.email)) currentUser.email = newEmail;
+                else if (newEmail && !newEmail.includes('@')) showToast("Email tidak valid");
+                const idx = users.findIndex(u => u.email === currentUser.email);
+                if (idx !== -1) users[idx] = currentUser;
+                saveUsers();
+                localStorage.setItem('feelz_current', JSON.stringify({ email: currentUser.email }));
+                renderProfile();
+                showToast("Profil diperbarui");
+            }
+            function forgotPasswordFlow() {
+                const email = prompt("Masukkan email untuk reset password:");
+                if (!email) return;
+                const user = users.find(u => u.email === email);
+                if (!user) { showToast("Email tidak ditemukan"); return; }
+                const newPass = prompt("Password baru (min 6 karakter)");
+                if (newPass && newPass.length >= 6) { user.password = newPass; saveUsers(); showToast("Password direset"); }
+                else showToast("Minimal 6 karakter");
+            }
+            function initFeatures() {
+                const features = ['AI Editor', 'Parafrase', 'Cek Plagiarisme', 'Ringkas Teks', 'Terjemahan', 'Analisis Teks'];
+                const container = document.getElementById('featureGrid');
+                container.innerHTML = features.map(f => `<div class="feature-card" data-feature="${f}"><div class="feature-icon">${getIcon(f)}</div><span>${f}</span></div>`).join('');
+                document.querySelectorAll('.feature-card').forEach(card => card.addEventListener('click', () => openFeatureModal(card.dataset.feature)));
+            }
+            function getIcon(f) {
+                if (f === 'AI Editor') return '✍️';
+                if (f === 'Parafrase') return '🔄';
+                if (f === 'Cek Plagiarisme') return '🔍';
+                if (f === 'Ringkas Teks') return '📄';
+                if (f === 'Terjemahan') return '🌐';
+                return '📊';
+            }
+            function loadTip() {
+                const tips = ['✨ Gunakan kata aktif untuk tulisan kuat', '📖 Parafrase dengan variasi kalimat', '🎯 Cek plagiarisme sebelum publikasi', '🔍 Ringkasan membantu pembaca', '🌐 Fitur Terjemahan siap digunakan (Indonesia→Inggris)'];
+                document.getElementById('dailyTip').innerHTML = `💡 Tips: ${tips[Math.floor(Math.random() * tips.length)]}`;
+            }
+
+            // Dark mode
+            function initDarkMode() {
+                const isDark = localStorage.getItem('feelz_dark') === 'true';
+                if (isDark) document.body.classList.add('dark');
+                const toggle = document.getElementById('darkModeToggle');
+                if (toggle) toggle.checked = isDark;
+                const globalBtn = document.getElementById('globalDarkToggle');
+                const apply = (checked) => { document.body.classList.toggle('dark', checked); localStorage.setItem('feelz_dark', checked); };
+                if (toggle) toggle.addEventListener('change', (e) => apply(e.target.checked));
+                if (globalBtn) globalBtn.addEventListener('click', () => { const newState = !document.body.classList.contains('dark'); apply(newState); if (toggle) toggle.checked = newState; });
+            }
+
+            // Event binding
+            function bindEvents() {
+                document.getElementById('doLoginBtn')?.addEventListener('click', () => { try { loginUser(document.getElementById('loginEmail').value, document.getElementById('loginPassword').value, document.getElementById('rememberMeCheckbox').checked); } catch (e) { showToast(e.message); } });
+                document.getElementById('doRegisterBtn')?.addEventListener('click', () => { try { registerUser(document.getElementById('regName').value, document.getElementById('regEmail').value, document.getElementById('regPassword').value); document.getElementById('registerForm').style.display = 'none'; document.getElementById('loginForm').style.display = 'block'; } catch (e) { showToast(e.message); } });
+                document.getElementById('showRegisterBtn')?.addEventListener('click', () => { document.getElementById('loginForm').style.display = 'none'; document.getElementById('registerForm').style.display = 'block'; });
+                document.getElementById('showLoginBtn')?.addEventListener('click', () => { document.getElementById('registerForm').style.display = 'none'; document.getElementById('loginForm').style.display = 'block'; });
+                document.getElementById('forgotPasswordBtn')?.addEventListener('click', forgotPasswordFlow);
+                document.getElementById('logoutBtn')?.addEventListener('click', logout);
+                document.getElementById('editProfileBtn')?.addEventListener('click', editProfile);
+                document.getElementById('clearHistoryBtn')?.addEventListener('click', () => { historyEntries = historyEntries.filter(h => h.userId !== currentUser?.email); saveHistory(); renderRiwayat(); showToast("Riwayat dihapus"); });
+                document.getElementById('sendChatBtn')?.addEventListener('click', sendChatMessage);
+                document.getElementById('chatInput')?.addEventListener('keypress', (e) => e.key === 'Enter' && sendChatMessage());
+                document.querySelectorAll('.nav-item').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        const pageId = btn.dataset.page;
+                        document.querySelectorAll('.page').forEach(p => p.classList.remove('active-page'));
+                        document.getElementById(pageId).classList.add('active-page');
+                        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+                        btn.classList.add('active');
+                        if (pageId === 'riwayatPage') renderRiwayat();
+                        if (pageId === 'profilPage') renderProfile();
+                    });
+                });
+                document.getElementById('floatingAskAi')?.addEventListener('click', () => {
+                    document.querySelectorAll('.page').forEach(p => p.classList.remove('active-page'));
+                    document.getElementById('aiChatPage').classList.add('active-page');
+                    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+                    document.querySelector('.nav-item[data-page="aiChatPage"]').classList.add('active');
+                });
+            }
+
+            // Auto login check
+            const remember = localStorage.getItem('feelz_remember');
+            if (remember) {
+                try {
+                    const { email, password } = JSON.parse(remember);
+                    const user = users.find(u => u.email === email && u.password === password);
+                    if (user) { currentUser = user; localStorage.setItem('feelz_current', JSON.stringify({ email })); showAppAfterLogin(); }
+                    else { document.getElementById('authScreen').style.display = 'block'; }
+                } catch (e) { document.getElementById('authScreen').style.display = 'block'; }
+            } else if (localStorage.getItem('feelz_current')) showAppAfterLogin();
+            else document.getElementById('authScreen').style.display = 'block';
+            initDarkMode();
+            bindEvents();
+        })();
     </script>
-
 </body>
 
 </html>
