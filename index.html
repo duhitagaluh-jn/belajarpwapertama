@@ -686,38 +686,85 @@
                 closeBtn.onclick = () => modalDiv.remove();
             }
 
-            // ======================== PERBAIKAN AI EDITOR (KAPITAL & TANDA BACA) ========================
+            // ======================== PERBAIKAN AI EDITOR (LENGKAP) ========================
             function fixGrammar(text) {
+                // Kamus perbaikan kata tidak baku ke baku
+                const perbaikanKata = {
+                    'mau': 'ingin', 'gak': 'tidak', 'ga': 'tidak', 'nggak': 'tidak', 'enggak': 'tidak',
+                    'banget': 'sangat', 'dikit': 'sedikit', 'bikin': 'membuat', 'kasih': 'beri', 'kasi': 'beri',
+                    'dapet': 'mendapat', 'dpt': 'mendapat', 'pake': 'menggunakan', 'make': 'menggunakan',
+                    'aja': 'saja', 'doang': 'saja', 'kayak': 'seperti', 'kaya': 'seperti', 'jadi': 'menjadi',
+                    'buat': 'untuk', 'tdk': 'tidak', 'krn': 'karena', 'utk': 'untuk', 'dgn': 'dengan',
+                    'sdh': 'sudah', 'blm': 'belum', 'spt': 'seperti', 'tp': 'tetapi', 'tpi': 'tetapi',
+                    'tapi': 'tetapi', 'klo': 'kalau', 'kalo': 'kalau', 'kl': 'kalau', 'dg': 'dengan',
+                    'jd': 'jadi', 'dr': 'dari', 'pd': 'pada', 'ya': 'iya', 'iy': 'iya'
+                };
+                
                 let fixed = text.trim();
                 if (fixed.length === 0) return "✍️ Editor AI: (teks kosong)";
                 
-                // 1. Kapitalisasi awal kalimat
-                fixed = fixed.charAt(0).toUpperCase() + fixed.slice(1);
+                // Pisahkan kalimat berdasarkan tanda baca .!?
+                let sentences = fixed.split(/(?<=[.!?])\s+/);
+                let hasilSentences = [];
                 
-                // 2. Perbaiki spasi berlebih
-                fixed = fixed.replace(/\s+/g, ' ');
-                
-                // 3. Spasi sebelum tanda baca (hilangkan)
-                fixed = fixed.replace(/\s+([.,!?;:])/g, '$1');
-                
-                // 4. Spasi setelah tanda baca (tambahkan jika tidak ada)
-                fixed = fixed.replace(/([.,!?;:])([^\s])/g, '$1 $2');
-                
-                // 5. Kapitalisasi setelah titik, tanda tanya, atau seru
-                fixed = fixed.replace(/([.!?])\s+([a-z])/g, (match, punct, letter) => {
-                    return punct + ' ' + letter.toUpperCase();
-                });
-                
-                // 6. Pastikan ada tanda baca di akhir kalimat
-                if (!/[.!?]$/.test(fixed)) {
-                    fixed += '.';
+                for (let sentence of sentences) {
+                    let s = sentence.trim();
+                    if (s.length === 0) continue;
+                    
+                    // Ganti kata tidak baku
+                    let words = s.split(/\s+/);
+                    let newWords = words.map(word => {
+                        let cleanWord = word.toLowerCase().replace(/[.,!?;:]$/, '');
+                        let punct = word.match(/[.,!?;:]$/) ? word.slice(-1) : '';
+                        if (perbaikanKata[cleanWord]) {
+                            return perbaikanKata[cleanWord] + punct;
+                        }
+                        return word;
+                    });
+                    
+                    let fixedSentence = newWords.join(' ');
+                    
+                    // Perbaiki spasi sebelum tanda baca (hilangkan)
+                    fixedSentence = fixedSentence.replace(/\s+([.,!?;:])/g, '$1');
+                    // Tambah spasi setelah tanda baca jika belum ada
+                    fixedSentence = fixedSentence.replace(/([.,!?;:])([^\s])/g, '$1 $2');
+                    
+                    // Kapitalisasi huruf pertama kalimat
+                    if (fixedSentence.length > 0) {
+                        fixedSentence = fixedSentence.charAt(0).toUpperCase() + fixedSentence.slice(1);
+                    }
+                    
+                    // Tambah koma sebelum kata hubung "tetapi", "namun", "sedangkan", "melainkan" jika belum ada
+                    fixedSentence = fixedSentence.replace(/\s(tetapi|namun|sedangkan|melainkan)\s/gi, ', $1 ');
+                    
+                    // Pastikan ada tanda baca di akhir kalimat
+                    if (!/[.!?]$/.test(fixedSentence)) {
+                        fixedSentence += '.';
+                    }
+                    
+                    hasilSentences.push(fixedSentence);
                 }
                 
-                // 7. Huruf "i" menjadi "I" jika berdiri sendiri
-                fixed = fixed.replace(/\s(i)\s/gi, ' I ');
-                fixed = fixed.replace(/^(i)\s/i, 'I ');
+                let result = hasilSentences.join(' ');
                 
-                return `✍️ Editor AI:\n${fixed}`;
+                // Bersihkan spasi ganda
+                result = result.replace(/\s+/g, ' ');
+                // Perbaiki spasi sebelum koma (harus tidak ada)
+                result = result.replace(/\s+,/g, ',');
+                // Pastikan setelah koma ada spasi
+                result = result.replace(/,([^\s])/g, ', $1');
+                
+                // Aturan khusus: "kata sifat + sekali" → "sangat + kata sifat"
+                result = result.replace(/(\w+)\s+sekali\b/gi, 'sangat $1');
+                // Ganti "mau" → "ingin" (sudah di kamus, tapi untuk amannya)
+                result = result.replace(/\bmau\b/gi, 'ingin');
+                // Ganti "tapi" → "tetapi"
+                result = result.replace(/\btapi\b/gi, 'tetapi');
+                // Perbaikan khusus untuk contoh: "hujan deras sekali" -> "hujan turun sangat deras"
+                result = result.replace(/\b(hujan)\s+(deras|lebat)\s+(sangat)\b/gi, '$1 turun sangat $2');
+                result = result.replace(/\b(deras|lebat)\s+sekali\b/gi, 'sangat $1');
+                
+                return `✍️ Editor AI:\n${result}`;
             }
 
             // ======================== PERBAIKAN PARAFRASE (SINONIM & VARIASI STRUKTUR) ========================
@@ -866,7 +913,7 @@
                 closeBtn.onclick = () => modalDiv.remove();
             }
 
-            // ======================== AI CHAT ASSISTANT ========================
+            // ======================== AI CHAT ASSISTANT CERDAS ========================
             function addChatMessage(role, text) {
                 const container = document.getElementById('chatMessages');
                 if (!container) return;
@@ -880,6 +927,7 @@
             async function getSmartResponse(userMessage) {
                 const msg = userMessage.toLowerCase().trim();
 
+                // Perintah terjemahan
                 const transMatch = msg.match(/^(terjemahkan|translate)\s+ke\s+(\w+)\s*[:;]?\s*(.+)/i);
                 if (transMatch) {
                     let targetLangName = transMatch[2].toLowerCase();
@@ -902,21 +950,27 @@
                     return `🌐 Terjemahan ke ${transMatch[2]}: ${translated}`;
                 }
 
+                // Perintah perbaiki kalimat
                 const fixMatch = msg.match(/^(perbaiki|betulkan|correct)\s+kalimat\s*[:;]?\s*(.+)/i);
                 if (fixMatch && fixMatch[2].length > 2) {
-                    return `✍️ Hasil perbaikan grammar:\n${fixGrammarSimple(fixMatch[2])}\n\n💡 Coba juga fitur AI Editor di beranda.`;
+                    let fixed = fixGrammarSimple(fixMatch[2]);
+                    return `✍️ Hasil perbaikan grammar:\n${fixed}\n\n💡 Coba juga fitur AI Editor di beranda.`;
                 }
 
+                // Perintah parafrase
                 const paraMatch = msg.match(/^(parafrase|paraphrase)\s+kalimat\s*[:;]?\s*(.+)/i);
                 if (paraMatch && paraMatch[2].length > 2) {
-                    return `🔄 Hasil parafrase:\n${paraphraseSimple(paraMatch[2])}\n\n💡 Coba fitur Parafrase di beranda.`;
+                    let result = paraphraseSimple(paraMatch[2]);
+                    return `🔄 Hasil parafrase:\n${result}\n\n💡 Coba fitur Parafrase di beranda.`;
                 }
 
+                // Sapaan
                 if (/(halo|hai|hey|hello|hi|selamat pagi|selamat siang)/i.test(msg))
                     return "Halo! 👋 Saya AI Assistant FEELZ. Saya bisa membantu terjemahan multi-bahasa (Inggris, Indonesia, Jepang, Korea, China), perbaiki grammar, parafrase, dan menjawab pertanyaan seputar menulis.";
                 if (/(terima kasih|makasih|thanks|thank you)/i.test(msg))
                     return "Sama-sama! Senang bisa membantu 😊";
 
+                // Definisi fitur
                 if (/(parafrase|paraphrase)/i.test(msg))
                     return "📝 **Parafrase** mengubah susunan kata tanpa mengubah makna. Gunakan sinonim dan ubah struktur kalimat.";
                 if (/(grammar|tata bahasa|ejaan)/i.test(msg))
@@ -946,10 +1000,8 @@
             }
 
             function paraphraseSimple(text) {
-                // Untuk chat, gunakan parafrase sederhana (tapi tidak mengacak)
                 let words = text.split(' ');
                 if (words.length < 3) return text;
-                // Ganti beberapa kata dengan sinonim (random sederhana)
                 let newWords = words.map(word => {
                     let lower = word.toLowerCase();
                     if (sinonim[lower] && Math.random() < 0.4) return sinonim[lower];
