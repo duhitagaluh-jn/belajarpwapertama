@@ -1,8 +1,8 @@
 {
-  "id": "./",
-  "name": "Aplikasi ",
-  "short_name": "PWA Demo",
-  "description": "Aplikasi PWA responsif untuk demonstrasi template dasar Progressive Web App dengan dukungan offline dan installable.",
+  "id": "./FEELZ",
+  "name": "FEELZ",
+  "short_name": "FEELZ",
+  "description": "Aplikasi PWA untuk memperbaiki penulisan",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
@@ -17,7 +17,7 @@
       "type": "image/png"
     },
     {
-      "src": "icons/logo-512x512.png",
+      "src": "icons/logo-1024x1024.png",
       "sizes": "512x512",
       "type": "image/png"
     }
