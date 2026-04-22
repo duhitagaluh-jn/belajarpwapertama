@@ -8,7 +8,7 @@ const urlsToCache = [
   `${BASE_URL}assets/style.css`,
   `${BASE_URL}manifest.json`,
   `${BASE_URL}icons/logo-1024x1024.png`,
-  `${BASE_URL}icons/logo-1024x1024.png`,
+  `${BASE_URL}icons/logo-512x512.png`,
 ];
 
 // Install Service Worker & simpan file ke cache
