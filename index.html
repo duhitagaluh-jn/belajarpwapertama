@@ -397,6 +397,19 @@
             color: white;
         }
 
+        .language-select {
+            margin: 10px 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .language-select select {
+            width: auto;
+            margin-bottom: 0;
+            padding: 8px 12px;
+        }
+
         @media (max-width: 640px) {
             .feature-grid {
                 grid-template-columns: repeat(3, 1fr);
@@ -492,7 +505,7 @@
                     style="height: 55vh; overflow-y: auto; background:#f8fafc; border-radius: 28px; padding: 16px; margin:12px 0;">
                 </div>
                 <div style="display:flex; gap:8px;">
-                    <input type="text" id="chatInput" placeholder="Tanya tentang menulis, parafrase, dll...">
+                    <input type="text" id="chatInput" placeholder="Tanya tentang menulis, parafrase, terjemahan...">
                     <button id="sendChatBtn" class="btn">Kirim</button>
                 </div>
             </div>
@@ -596,34 +609,97 @@
                 `).join('');
             }
 
-            function translateTextIndoToEnglish(text) {
-                
-                const dict = {
-                    'saya': 'I', 'aku': 'I', 'kamu': 'you', 'anda': 'you', 'dia': 'he/she',
-                    'mereka': 'they', 'kita': 'we', 'kami': 'we', 'ini': 'this', 'itu': 'that',
-                    'dan': 'and', 'atau': 'or', 'tapi': 'but', 'karena': 'because', 'jadi': 'so',
-                    'baik': 'good', 'buruk': 'bad', 'besar': 'big', 'kecil': 'small', 'cepat': 'fast',
-                    'lambat': 'slow', 'makan': 'eat', 'minum': 'drink', 'pergi': 'go', 'datang': 'come',
-                    'lihat': 'see', 'dengar': 'hear', 'bicara': 'talk', 'tulis': 'write', 'baca': 'read',
-                    'senang': 'happy', 'sedih': 'sad', 'marah': 'angry', 'takut': 'afraid', 'cinta': 'love'
-                };
-                let words = text.toLowerCase().split(/\s+/);
-                let translatedWords = words.map(word => {
-                    let clean = word.replace(/[.,!?;:]$/, '');
-                    let punct = word.match(/[.,!?;:]$/) ? word.slice(-1) : '';
-                    let trans = dict[clean] || clean;
-                    if (trans === clean && clean.length > 2) {
-                        
-                        trans = trans + '?';
+            // ======================== FUNGSI TERJEMAHAN MULTI-BAHASA (TANPA API KEY) ========================
+            // Menggunakan Google Translate endpoint publik (gratis, tanpa perlu registrasi)
+            async function translateText(text, targetLang) {
+                // targetLang: 'en', 'id', 'ja', 'ko', 'zh-CN', 'zh-TW'
+                const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=${targetLang}&dt=t&q=${encodeURIComponent(text)}`;
+                try {
+                    const response = await fetch(url);
+                    const data = await response.json();
+                    if (data && data[0]) {
+                        let translated = data[0].map(item => item[0]).join('');
+                        return translated;
+                    } else {
+                        throw new Error('Terjemahan gagal');
                     }
-                    return trans + punct;
-                });
-                let result = translatedWords.join(' ');
-                
-                result = result.charAt(0).toUpperCase() + result.slice(1);
-                return `🌐 Terjemahan (Indonesia → Inggris):\n${result}\n\n(Simulasi AI - untuk akurasi lebih tinggi gunakan API terjemahan)`;
+                } catch (error) {
+                    console.error('Translation error:', error);
+                    return `❌ Gagal menerjemahkan. Periksa koneksi internet. (${error.message})`;
+                }
             }
 
+            // Kode bahasa yang didukung
+            const langCodes = {
+                'Inggris': 'en',
+                'Indonesia': 'id',
+                'Jepang': 'ja',
+                'Korea': 'ko',
+                'China (Sederhana)': 'zh-CN',
+                'China (Tradisional)': 'zh-TW'
+            };
+
+            // Fungsi untuk menampilkan modal terjemahan dengan pilihan bahasa
+            function openTranslationModal() {
+                const modalDiv = document.createElement('div');
+                modalDiv.className = 'modal';
+                modalDiv.innerHTML = `
+                    <div class="modal-content">
+                        <h3>🌐 Terjemahan Multi-Bahasa</h3>
+                        <textarea id="modalInput" rows="4" placeholder="Masukkan teks yang ingin diterjemahkan..."></textarea>
+                        <div class="language-select">
+                            <label>Terjemahkan ke:</label>
+                            <select id="targetLangSelect">
+                                <option value="en">Inggris</option>
+                                <option value="id">Indonesia</option>
+                                <option value="ja">Jepang</option>
+                                <option value="ko">Korea</option>
+                                <option value="zh-CN">China (Sederhana)</option>
+                                <option value="zh-TW">China (Tradisional)</option>
+                            </select>
+                        </div>
+                        <div style="display:flex; gap:12px; margin:16px 0;">
+                            <button id="modalProcessBtn" class="btn">🌐 Terjemahkan</button>
+                            <button id="modalCloseBtn" class="btn-outline btn">Tutup</button>
+                        </div>
+                        <div id="modalResult" class="result-box" style="display:none;"></div>
+                        <div id="modalActionBtns" style="display:flex; gap:12px;"></div>
+                    </div>
+                `;
+                document.body.appendChild(modalDiv);
+                setTimeout(() => modalDiv.classList.add('active'), 10);
+                
+                const processBtn = modalDiv.querySelector('#modalProcessBtn');
+                const closeBtn = modalDiv.querySelector('#modalCloseBtn');
+                const resultDiv = modalDiv.querySelector('#modalResult');
+                const actionDiv = modalDiv.querySelector('#modalActionBtns');
+                const inputTextarea = modalDiv.querySelector('#modalInput');
+                const targetSelect = modalDiv.querySelector('#targetLangSelect');
+                let currentOutput = '';
+                
+                processBtn.onclick = async () => {
+                    const inputText = inputTextarea.value.trim();
+                    if (!inputText) { showToast("Harap isi teks"); return; }
+                    const targetLang = targetSelect.value;
+                    processBtn.innerHTML = '<span class="loading"></span> Menerjemahkan...';
+                    processBtn.disabled = true;
+                    try {
+                        incrementUsage();
+                        const translated = await translateText(inputText, targetLang);
+                        currentOutput = `🌐 Terjemahan ke ${targetSelect.options[targetSelect.selectedIndex].text}:\n${translated}`;
+                        resultDiv.style.display = 'block';
+                        resultDiv.innerText = currentOutput;
+                        actionDiv.innerHTML = `<button class="btn-outline btn" id="copyResultBtn">📋 Salin</button><button class="btn-outline btn" id="downloadResultBtn">⬇️ Download</button>`;
+                        document.getElementById('copyResultBtn')?.addEventListener('click', () => { navigator.clipboard.writeText(currentOutput); showToast("Tersalin!"); });
+                        document.getElementById('downloadResultBtn')?.addEventListener('click', () => { const blob = new Blob([currentOutput], { type: 'text/plain' }); const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'terjemahan.txt'; a.click(); });
+                        addHistory('Terjemahan', inputText, currentOutput);
+                    } catch (e) { showToast(e.message); }
+                    finally { processBtn.innerHTML = '🌐 Terjemahkan'; processBtn.disabled = false; }
+                };
+                closeBtn.onclick = () => modalDiv.remove();
+            }
+
+            // ======================== FITUR AI LAINNYA ========================
             async function processWithAI(feature, text) {
                 if (!text.trim()) throw new Error("Teks kosong");
                 incrementUsage();
@@ -633,7 +709,10 @@
                     case 'Parafrase': return paraphraseText(text);
                     case 'Cek Plagiarisme': return `🔍 Hasil Cek Plagiarisme: ${Math.floor(Math.random() * 31)}% kemiripan.\n${Math.random() > 0.5 ? 'Teks cukup original.' : 'Saran: lakukan parafrase ulang.'}`;
                     case 'Ringkas Teks': return summarizeText(text);
-                    case 'Terjemahan': return translateTextIndoToEnglish(text);
+                    case 'Terjemahan': 
+                        // Untuk fitur terjemahan di grid, kita buka modal khusus
+                        openTranslationModal();
+                        return "Silakan pilih bahasa target di jendela yang muncul.";
                     case 'Analisis Teks': return analyzeText(text);
                     default: return "Proses selesai.";
                 }
@@ -671,8 +750,11 @@
                 return `📊 Analisis: ${words} kata, ${chars} karakter, Formalitas: ${formality}/100. ${formality < 50 ? 'Santai' : 'Formal'}.`;
             }
 
-         
             function openFeatureModal(featureName) {
+                if (featureName === 'Terjemahan') {
+                    openTranslationModal();
+                    return;
+                }
                 const modalDiv = document.createElement('div');
                 modalDiv.className = 'modal';
                 modalDiv.innerHTML = `
@@ -714,9 +796,7 @@
                 closeBtn.onclick = () => modalDiv.remove();
             }
 
-            // ======================== AI CHAT ASSISTANT YANG CERDAS ========================
-            // Kamus terjemahan untuk chat (sama dengan yang di atas, tapi kita gunakan ulang)
-            // Fungsi addChatMessage dan sendChatMessage yang baru
+            // ======================== AI CHAT ASSISTANT CERDAS dengan Terjemahan ========================
             function addChatMessage(role, text) {
                 const container = document.getElementById('chatMessages');
                 if (!container) return;
@@ -727,7 +807,72 @@
                 container.scrollTop = container.scrollHeight;
             }
 
-            // Fungsi perbaikan grammar sederhana untuk chat
+            async function getSmartResponse(userMessage) {
+                const msg = userMessage.toLowerCase().trim();
+
+                // Perintah terjemahan: "terjemahkan ke inggris: hello world" atau "terjemahkan ke jepang: selamat pagi"
+                const transMatch = msg.match(/^(terjemahkan|translate)\s+ke\s+(\w+)\s*[:;]?\s*(.+)/i);
+                if (transMatch) {
+                    let targetLangName = transMatch[2].toLowerCase();
+                    let textToTranslate = transMatch[3].trim();
+                    if (textToTranslate.length < 1) return "Teks yang akan diterjemahkan tidak boleh kosong.";
+                    // mapping nama bahasa ke kode
+                    const langMap = {
+                        'inggris': 'en', 'english': 'en',
+                        'indonesia': 'id', 'indonesian': 'id',
+                        'jepang': 'ja', 'japanese': 'ja',
+                        'korea': 'ko', 'korean': 'ko',
+                        'china': 'zh-CN', 'chinese': 'zh-CN', 'mandarin': 'zh-CN',
+                        'china tradisional': 'zh-TW', 'tradisional': 'zh-TW'
+                    };
+                    let targetCode = langMap[targetLangName];
+                    if (!targetCode) {
+                        return `Bahasa target "${transMatch[2]}" tidak didukung. Gunakan: Inggris, Indonesia, Jepang, Korea, China.`;
+                    }
+                    addChatMessage('ai', '⏳ Menerjemahkan...');
+                    const translated = await translateText(textToTranslate, targetCode);
+                    return `🌐 Terjemahan ke ${transMatch[2]}: ${translated}`;
+                }
+
+                // Perintah perbaiki kalimat
+                const fixMatch = msg.match(/^(perbaiki|betulkan|correct)\s+kalimat\s*[:;]?\s*(.+)/i);
+                if (fixMatch && fixMatch[2].length > 2) {
+                    return `✍️ Hasil perbaikan grammar:\n${fixGrammarSimple(fixMatch[2])}\n\n💡 Coba juga fitur AI Editor di beranda.`;
+                }
+
+                // Perintah parafrase
+                const paraMatch = msg.match(/^(parafrase|paraphrase)\s+kalimat\s*[:;]?\s*(.+)/i);
+                if (paraMatch && paraMatch[2].length > 2) {
+                    return `🔄 Hasil parafrase:\n${paraphraseSimple(paraMatch[2])}\n\n💡 Coba fitur Parafrase di beranda.`;
+                }
+
+                // Sapaan
+                if (/(halo|hai|hey|hello|hi|selamat pagi|selamat siang)/i.test(msg))
+                    return "Halo! 👋 Saya AI Assistant FEELZ. Saya bisa membantu terjemahan multi-bahasa (Inggris, Indonesia, Jepang, Korea, China), perbaiki grammar, parafrase, dan menjawab pertanyaan seputar menulis.";
+                if (/(terima kasih|makasih|thanks|thank you)/i.test(msg))
+                    return "Sama-sama! Senang bisa membantu 😊";
+
+                // Topik lainnya
+                if (/(parafrase|paraphrase)/i.test(msg))
+                    return "📝 **Parafrase** mengubah susunan kata tanpa mengubah makna. Gunakan sinonim dan ubah struktur kalimat.";
+                if (/(grammar|tata bahasa|ejaan)/i.test(msg))
+                    return "✅ **AI Editor** memperbaiki ejaan dan tata bahasa. Contoh: 'saya pergi kepasar' → 'Saya pergi ke pasar.'";
+                if (/(plagiarisme|plagiasi|cek plagiat)/i.test(msg))
+                    return "🔍 **Cek Plagiarisme** memberi persentase kemiripan. Jika tinggi, lakukan parafrase.";
+                if (/(ringkas|rangkum|summarize)/i.test(msg))
+                    return "📄 **Ringkas Teks** meringkas tulisan panjang menjadi poin utama.";
+                if (/(analisis|analisa teks|readability)/i.test(msg))
+                    return "📊 **Analisis Teks** memberi jumlah kata, karakter, tingkat formalitas.";
+                if (/(fitur|apa saja|bisa apa)/i.test(msg))
+                    return "✨ FEELZ punya 6 fitur: AI Editor, Parafrase, Cek Plagiarisme, Ringkas Teks, Terjemahan (multi-bahasa), Analisis Teks.";
+                if (/(cara menggunakan|panduan|tutorial)/i.test(msg))
+                    return "📖 Panduan: Pilih fitur di Beranda → masukkan teks → klik Proses → hasil bisa disalin/diunduh.";
+                if (/(tips menulis|menulis yang baik)/i.test(msg))
+                    return "✍️ Tips menulis: kalimat aktif, hindari kata berulang, baca ulang, dan manfaatkan AI Editor.";
+
+                return "🤔 Saya bisa membantu terjemahan (contoh: 'terjemahkan ke inggris: selamat pagi'), perbaiki grammar ('perbaiki kalimat: saya pergi ke pasar'), parafrase, atau jelaskan fitur. Ada yang bisa saya bantu?";
+            }
+
             function fixGrammarSimple(text) {
                 let fixed = text.trim();
                 if (fixed) fixed = fixed.charAt(0).toUpperCase() + fixed.slice(1);
@@ -736,7 +881,6 @@
                 return fixed;
             }
 
-            // Fungsi parafrase sederhana untuk chat
             function paraphraseSimple(text) {
                 let words = text.split(' ');
                 if (words.length < 3) return text;
@@ -748,89 +892,16 @@
                 return shuffled.join(' ');
             }
 
-            // Fungsi terjemahan sederhana untuk chat
-            function translateSimple(text) {
-                const dict = {
-                    'saya': 'I', 'aku': 'I', 'kamu': 'you', 'anda': 'you', 'dia': 'he/she',
-                    'mereka': 'they', 'kita': 'we', 'kami': 'we', 'ini': 'this', 'itu': 'that',
-                    'dan': 'and', 'atau': 'or', 'tapi': 'but', 'karena': 'because', 'jadi': 'so',
-                    'baik': 'good', 'buruk': 'bad', 'besar': 'big', 'kecil': 'small', 'cepat': 'fast',
-                    'lambat': 'slow', 'makan': 'eat', 'minum': 'drink', 'pergi': 'go', 'datang': 'come',
-                    'lihat': 'see', 'dengar': 'hear', 'bicara': 'talk', 'tulis': 'write', 'baca': 'read',
-                    'senang': 'happy', 'sedih': 'sad', 'marah': 'angry', 'takut': 'afraid', 'cinta': 'love'
-                };
-                let words = text.toLowerCase().split(/\s+/);
-                let translated = words.map(word => {
-                    let clean = word.replace(/[.,!?;:]$/, '');
-                    let punct = word.match(/[.,!?;:]$/) ? word.slice(-1) : '';
-                    let trans = dict[clean] || clean;
-                    if (trans === clean && clean.length > 2) trans += '?';
-                    return trans + punct;
-                });
-                let result = translated.join(' ');
-                return result.charAt(0).toUpperCase() + result.slice(1);
-            }
-
-            function getSmartResponse(userMessage) {
-                const msg = userMessage.toLowerCase().trim();
-
-                // Perintah perbaiki kalimat
-                const fixMatch = msg.match(/^(perbaiki|betulkan|correct)\s+kalimat\s*[:;]?\s*(.+)/i);
-                if (fixMatch && fixMatch[2].length > 2) {
-                    return `✍️ Hasil perbaikan grammar:\n${fixGrammarSimple(fixMatch[2])}\n\n💡 Coba juga fitur AI Editor di beranda.`;
-                }
-
-                // Perintah terjemahkan ke inggris
-                const transMatch = msg.match(/^(terjemahkan|translate)\s+ke\s+inggris\s*[:;]?\s*(.+)/i);
-                if (transMatch && transMatch[2].length > 2) {
-                    return `🌐 Terjemahan (Indonesia → Inggris):\n${translateSimple(transMatch[2])}\n\n💡 Gunakan fitur Terjemahan di beranda.`;
-                }
-
-                // Perintah parafrase kalimat
-                const paraMatch = msg.match(/^(parafrase|paraphrase)\s+kalimat\s*[:;]?\s*(.+)/i);
-                if (paraMatch && paraMatch[2].length > 2) {
-                    return `🔄 Hasil parafrase:\n${paraphraseSimple(paraMatch[2])}\n\n💡 Coba fitur Parafrase di beranda.`;
-                }
-
-                // Sapaan
-                if (/(halo|hai|hey|hello|hi|selamat pagi|selamat siang)/i.test(msg))
-                    return "Halo! 👋 Saya AI Assistant FEELZ. Ada yang bisa saya bantu? Tanyakan tentang menulis, grammar, parafrase, terjemahan, atau fitur-fitur kami.";
-                if (/(terima kasih|makasih|thanks|thank you)/i.test(msg))
-                    return "Sama-sama! Senang bisa membantu 😊";
-
-                // Topik
-                if (/(parafrase|paraphrase|mengubah kalimat|menjadikan unik)/i.test(msg))
-                    return "📝 **Parafrase** mengubah susunan kata tanpa mengubah makna. Tips: gunakan sinonim dan ubah struktur kalimat.";
-                if (/(grammar|tata bahasa|ejaan|perbaiki kalimat)/i.test(msg))
-                    return "✅ **AI Editor** memperbaiki ejaan, tata bahasa, dan struktur. Contoh: 'saya pergi kepasar' → 'Saya pergi ke pasar.'";
-                if (/(plagiarisme|plagiasi|cek plagiat|kemiripan teks)/i.test(msg))
-                    return "🔍 **Cek Plagiarisme** memberi persentase kemiripan. Jika tinggi, lakukan parafrase ulang.";
-                if (/(ringkas|rangkum|summarize|meringkas)/i.test(msg))
-                    return "📄 **Ringkas Teks** meringkas tulisan panjang menjadi poin utama. Cocok untuk artikel atau catatan.";
-                if (/(terjemah|translate|inggris|english|alih bahasa)/i.test(msg))
-                    return "🌐 **Terjemahan** mendukung Indonesia → Inggris (simulasi). Masukkan teks Indonesia, klik proses.";
-                if (/(analisis|analisa teks|readability|formalitas)/i.test(msg))
-                    return "📊 **Analisis Teks** memberi jumlah kata, karakter, tingkat formalitas, dan readability.";
-                if (/(fitur|apa saja|bisa apa|kemampuan|fungsi)/i.test(msg))
-                    return "✨ FEELZ punya 6 fitur: AI Editor, Parafrase, Cek Plagiarisme, Ringkas Teks, Terjemahan, Analisis Teks.";
-                if (/(cara menggunakan|panduan|tutorial|bagaimana cara)/i.test(msg))
-                    return "📖 Panduan: Pilih fitur di Beranda → masukkan teks → klik Proses → hasil bisa disalin/diunduh.";
-                if (/(tips menulis|menulis yang baik|tulisan bagus)/i.test(msg))
-                    return "✍️ Tips menulis: kalimat aktif, hindari kata berulang, baca ulang, dan manfaatkan AI Editor.";
-
-                return "🤔 Maaf, saya belum mengerti pertanyaan Anda. Coba tanyakan:\n- 'Apa itu parafrase?'\n- 'Perbaiki kalimat: saya suka makan'\n- 'Terjemahkan ke inggris: selamat pagi'\n- 'Fitur apa saja?'";
-            }
-
             async function sendChatMessage() {
                 const input = document.getElementById('chatInput');
                 const q = input.value.trim();
                 if (!q) return;
                 addChatMessage('user', q);
                 input.value = '';
-                incrementUsage(); // tetap gunakan kuota
+                incrementUsage();
                 addChatMessage('ai', '⏳ Memikirkan jawaban...');
                 await new Promise(r => setTimeout(r, 600));
-                const answer = getSmartResponse(q);
+                const answer = await getSmartResponse(q);
                 const lastMsg = document.querySelector('#chatMessages .chat-message:last-child');
                 if (lastMsg && !lastMsg.classList.contains('chat-user')) {
                     lastMsg.innerHTML = `<strong>AI Feelz</strong><br/>${answer.replace(/\n/g, '<br>')}`;
@@ -839,8 +910,7 @@
                 }
             }
 
-            // ======================== END OF AI CHAT ========================
-            
+            // ======================== AUTENTIKASI DAN INIT ========================
             function registerUser(name, email, password) {
                 if (!email.includes('@')) throw new Error('Email tidak valid');
                 if (password.length < 6) throw new Error('Password minimal 6 karakter');
@@ -924,11 +994,10 @@
                 return '📊';
             }
             function loadTip() {
-                const tips = ['✨ Gunakan kata aktif untuk tulisan kuat', '📖 Parafrase dengan variasi kalimat', '🎯 Cek plagiarisme sebelum publikasi', '🔍 Ringkasan membantu pembaca', '🌐 Fitur Terjemahan siap digunakan (Indonesia→Inggris)'];
+                const tips = ['✨ Gunakan kata aktif untuk tulisan kuat', '📖 Parafrase dengan variasi kalimat', '🎯 Cek plagiarisme sebelum publikasi', '🌐 Fitur Terjemahan mendukung 6 bahasa (Inggris, Indonesia, Jepang, Korea, China)'];
                 document.getElementById('dailyTip').innerHTML = `💡 Tips: ${tips[Math.floor(Math.random() * tips.length)]}`;
             }
 
-            
             function initDarkMode() {
                 const isDark = localStorage.getItem('feelz_dark') === 'true';
                 if (isDark) document.body.classList.add('dark');
@@ -940,7 +1009,6 @@
                 if (globalBtn) globalBtn.addEventListener('click', () => { const newState = !document.body.classList.contains('dark'); apply(newState); if (toggle) toggle.checked = newState; });
             }
 
-            
             function bindEvents() {
                 document.getElementById('doLoginBtn')?.addEventListener('click', () => { try { loginUser(document.getElementById('loginEmail').value, document.getElementById('loginPassword').value, document.getElementById('rememberMeCheckbox').checked); } catch (e) { showToast(e.message); } });
                 document.getElementById('doRegisterBtn')?.addEventListener('click', () => { try { registerUser(document.getElementById('regName').value, document.getElementById('regEmail').value, document.getElementById('regPassword').value); document.getElementById('registerForm').style.display = 'none'; document.getElementById('loginForm').style.display = 'block'; } catch (e) { showToast(e.message); } });
@@ -971,7 +1039,6 @@
                 });
             }
 
-           
             const remember = localStorage.getItem('feelz_remember');
             if (remember) {
                 try {
