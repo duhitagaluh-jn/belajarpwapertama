@@ -1,6 +1,6 @@
 {
   "id": "./",
-  "name": "PWA Template Responsif",
+  "name": "Aplikasi ",
   "short_name": "PWA Demo",
   "description": "Aplikasi PWA responsif untuk demonstrasi template dasar Progressive Web App dengan dukungan offline dan installable.",
   "start_url": "./index.html",
@@ -12,8 +12,8 @@
   "lang": "id",
   "icons": [
     {
-      "src": "icons/icon-192x192-A.png",
-      "sizes": "192x192",
+      "src": "icons/logo-1024x1024.png",
+      "sizes": "1024x1024",
       "type": "image/png"
     },
     {
@@ -41,8 +41,8 @@
       "url": "./index.html",
       "icons": [
         {
-          "src": "icons/icon-192x192-A.png",
-          "sizes": "192x192"
+          "src": "icons/logo-1024x1024.png",
+          "sizes": "1024x1024"
         }
       ]
     }
