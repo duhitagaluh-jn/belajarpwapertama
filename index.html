@@ -844,7 +844,21 @@
                 switch (feature) {
                     case 'AI Editor': return fixGrammar(text);
                     case 'Parafrase': return paraphraseText(text);
-                    case 'Cek Plagiarisme': return `🔍 Hasil Cek Plagiarisme: ${Math.floor(Math.random() * 31)}% kemiripan.\n${Math.random() > 0.5 ? 'Teks cukup original.' : 'Saran: lakukan parafrase ulang.'}`;
+                    case 'Cek Plagiarisme': 
+                        let plagPercent = Math.floor(Math.random() * 101); // 0-100%
+                        let plagStatus = '';
+                        let plagSaran = '';
+                        if (plagPercent <= 15) {
+                            plagStatus = '✅ Aman';
+                            plagSaran = 'Teks Anda original. Pertahankan!';
+                        } else if (plagPercent <= 50) {
+                            plagStatus = '⚠️ Perlu revisi';
+                            plagSaran = 'Ada kemiripan sedang. Lakukan parafrase pada bagian tertentu.';
+                        } else {
+                            plagStatus = '❌ Tinggi';
+                            plagSaran = 'Tingkat kemiripan tinggi. Segera parafrase ulang seluruh teks.';
+                        }
+                        return `🔍 Hasil Cek Plagiarisme:\n📊 Persentase kemiripan: ${plagPercent}%\n📌 Status: ${plagStatus}\n💡 Saran: ${plagSaran}`;
                     case 'Ringkas Teks': return summarizeText(text);
                     case 'Terjemahan': 
                         openTranslationModal();
@@ -939,7 +953,7 @@
                         'jepang': 'ja', 'japanese': 'ja',
                         'korea': 'ko', 'korean': 'ko',
                         'china': 'zh-CN', 'chinese': 'zh-CN', 'mandarin': 'zh-CN',
-                        'china tradisional': 'zh-TW', 'tradisional': 'zh-TW'
+                        'china tradicional': 'zh-TW', 'tradisional': 'zh-TW'
                     };
                     let targetCode = langMap[targetLangName];
                     if (!targetCode) {
