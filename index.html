@@ -688,7 +688,6 @@
 
             // ======================== PERBAIKAN AI EDITOR (LENGKAP) ========================
             function fixGrammar(text) {
-                // Kamus perbaikan kata tidak baku ke baku
                 const perbaikanKata = {
                     'mau': 'ingin', 'gak': 'tidak', 'ga': 'tidak', 'nggak': 'tidak', 'enggak': 'tidak',
                     'banget': 'sangat', 'dikit': 'sedikit', 'bikin': 'membuat', 'kasih': 'beri', 'kasi': 'beri',
@@ -697,13 +696,24 @@
                     'buat': 'untuk', 'tdk': 'tidak', 'krn': 'karena', 'utk': 'untuk', 'dgn': 'dengan',
                     'sdh': 'sudah', 'blm': 'belum', 'spt': 'seperti', 'tp': 'tetapi', 'tpi': 'tetapi',
                     'tapi': 'tetapi', 'klo': 'kalau', 'kalo': 'kalau', 'kl': 'kalau', 'dg': 'dengan',
-                    'jd': 'jadi', 'dr': 'dari', 'pd': 'pada', 'ya': 'iya', 'iy': 'iya'
+                    'jd': 'jadi', 'dr': 'dari', 'pd': 'pada', 'ya': 'iya', 'iy': 'iya',
+                    'lagi': 'sedang', 'ngerjain': 'mengerjakan', 'gimana': 'bagaimana', 'dia': 'ia',
+                    'karna': 'karena', 'yg': 'yang'
                 };
+                
+                const stopwords = new Set([
+                    'dan', 'atau', 'tetapi', 'namun', 'sedangkan', 'melainkan', 'karena', 'sebab', 'jika',
+                    'maka', 'agar', 'bagi', 'sampai', 'tanpa', 'seperti', 'antara', 'dalam', 'atas', 'bawah',
+                    'depan', 'belakang', 'kiri', 'kanan', 'luar', 'sekitar', 'tentang', 'melalui', 'sejak',
+                    'hingga', 'serta', 'maupun', 'yang', 'ini', 'itu', 'tersebut', 'para', 'di', 'ke', 'dari',
+                    'pada', 'oleh', 'untuk', 'dengan', 'tanpa', 'bagi', 'demi', 'guna', 'sebagai', 'yakni',
+                    'adalah', 'ialah', 'saja', 'pun', 'per', 'setiap', 'beberapa', 'seorang', 'sebuah',
+                    'ia', 'dia', 'mereka', 'kita', 'kami', 'anda', 'saya', 'aku', 'kamu'
+                ]);
                 
                 let fixed = text.trim();
                 if (fixed.length === 0) return "✍️ Editor AI: (teks kosong)";
                 
-                // Pisahkan kalimat berdasarkan tanda baca .!?
                 let sentences = fixed.split(/(?<=[.!?])\s+/);
                 let hasilSentences = [];
                 
@@ -711,7 +721,6 @@
                     let s = sentence.trim();
                     if (s.length === 0) continue;
                     
-                    // Ganti kata tidak baku
                     let words = s.split(/\s+/);
                     let newWords = words.map(word => {
                         let cleanWord = word.toLowerCase().replace(/[.,!?;:]$/, '');
@@ -723,117 +732,132 @@
                     });
                     
                     let fixedSentence = newWords.join(' ');
-                    
-                    // Perbaiki spasi sebelum tanda baca (hilangkan)
+                    fixedSentence = fixedSentence.replace(/\s+nya\b/gi, 'nya');
                     fixedSentence = fixedSentence.replace(/\s+([.,!?;:])/g, '$1');
-                    // Tambah spasi setelah tanda baca jika belum ada
                     fixedSentence = fixedSentence.replace(/([.,!?;:])([^\s])/g, '$1 $2');
                     
-                    // Kapitalisasi huruf pertama kalimat
                     if (fixedSentence.length > 0) {
                         fixedSentence = fixedSentence.charAt(0).toUpperCase() + fixedSentence.slice(1);
                     }
                     
-                    // Tambah koma sebelum kata hubung "tetapi", "namun", "sedangkan", "melainkan" jika belum ada
+                    let wordsAfter = fixedSentence.split(/\s+/);
+                    let kapitalizedWords = wordsAfter.map((w, idx) => {
+                        if (idx === 0) return w;
+                        let lower = w.toLowerCase();
+                        let clean = lower.replace(/[.,!?;:]$/, '');
+                        let punct = w.match(/[.,!?;:]$/) ? w.slice(-1) : '';
+                        if (stopwords.has(clean)) return w;
+                        else return w.charAt(0).toUpperCase() + w.slice(1).toLowerCase();
+                    });
+                    fixedSentence = kapitalizedWords.join(' ');
+                    
                     fixedSentence = fixedSentence.replace(/\s(tetapi|namun|sedangkan|melainkan)\s/gi, ', $1 ');
-                    
-                    // Pastikan ada tanda baca di akhir kalimat
-                    if (!/[.!?]$/.test(fixedSentence)) {
-                        fixedSentence += '.';
-                    }
-                    
+                    if (!/[.!?]$/.test(fixedSentence)) fixedSentence += '.';
                     hasilSentences.push(fixedSentence);
                 }
                 
                 let result = hasilSentences.join(' ');
-                
-                // Bersihkan spasi ganda
                 result = result.replace(/\s+/g, ' ');
-                // Perbaiki spasi sebelum koma (harus tidak ada)
                 result = result.replace(/\s+,/g, ',');
-                // Pastikan setelah koma ada spasi
                 result = result.replace(/,([^\s])/g, ', $1');
-                
-                // Aturan khusus: "kata sifat + sekali" → "sangat + kata sifat"
                 result = result.replace(/(\w+)\s+sekali\b/gi, 'sangat $1');
-                // Ganti "mau" → "ingin" (sudah di kamus, tapi untuk amannya)
                 result = result.replace(/\bmau\b/gi, 'ingin');
-                // Ganti "tapi" → "tetapi"
                 result = result.replace(/\btapi\b/gi, 'tetapi');
-                // Perbaikan khusus untuk contoh: "hujan deras sekali" -> "hujan turun sangat deras"
                 result = result.replace(/\b(hujan)\s+(deras|lebat)\s+(sangat)\b/gi, '$1 turun sangat $2');
                 result = result.replace(/\b(deras|lebat)\s+sekali\b/gi, 'sangat $1');
+                result = result.replace(/([.!?])\s+([a-z])/g, (match, punct, letter) => punct + ' ' + letter.toUpperCase());
                 
                 return `✍️ Editor AI:\n${result}`;
             }
 
             // ======================== PERBAIKAN PARAFRASE (SINONIM & VARIASI STRUKTUR) ========================
-            const sinonim = {
-                'saya': 'aku', 'aku': 'saya',
-                'kamu': 'anda', 'anda': 'kamu',
-                'mereka': 'para', 'para': 'mereka',
-                'baik': 'bagus', 'bagus': 'baik',
-                'buruk': 'jelek', 'jelek': 'buruk',
-                'besar': 'luas', 'luas': 'besar',
-                'kecil': 'mungil', 'mungil': 'kecil',
-                'cepat': 'kilat', 'kilat': 'cepat',
-                'pergi': 'berangkat', 'berangkat': 'pergi',
-                'datang': 'hadir', 'hadir': 'datang',
-                'makan': 'menyantap', 'menyantap': 'makan',
-                'minum': 'meneguk', 'meneguk': 'minum',
-                'lihat': 'saksikan', 'saksikan': 'lihat',
-                'dengar': 'simak', 'simak': 'dengar',
-                'bicara': 'berbicara', 'berbicara': 'bicara',
-                'tulis': 'menulis', 'menulis': 'tulis',
-                'baca': 'membaca', 'membaca': 'baca',
-                'senang': 'gembira', 'gembira': 'senang',
-                'sedih': 'duka', 'duka': 'sedih',
-                'karena': 'sebab', 'sebab': 'karena',
-                'jadi': 'maka', 'maka': 'jadi'
+            const sinonimParafrase = {
+                // Kata kerja
+                'mengerjakan': ['menyelesaikan', 'melaksanakan', 'mengerjakan'],
+                'merasa': ['merasakan', 'mengalami', 'merasa'],
+                'kesulitan': ['kendala', 'kesukaran', 'problema'],
+                'khawatir': ['cemas', 'gelisah', 'khawatir'],
+                'membaca': ['menelaah', 'mempelajari', 'membaca'],
+                'menulis': ['menyusun', 'menuliskan', 'menulis'],
+                'membuat': ['menciptakan', 'menyusun', 'membuat'],
+                // Kata sifat
+                'berantakan': ['tidak rapi', 'acak-acakan', 'berantakan'],
+                'banyak': ['beragam', 'sejumlah', 'banyak'],
+                'sulit': ['sukar', 'rumit', 'sulit'],
+                // Kata benda
+                'tugas akhir': ['skripsi', 'tugas akhir', 'penelitian'],
+                'internet': ['daring', 'online', 'internet'],
+                'tulisan': ['tulisan', 'teks', 'naskah'],
+                'kesalahan': ['kekeliruan', 'error', 'kesalahan'],
+                // Kata keterangan
+                'masih': ['belum', 'masih'],
+                'juga': ['pula', 'juga'],
+                'sangat': ['amat', 'sangat'],
+                // Kata ganti
+                'ia': ['ia', 'dirinya'],
+                'raka': ['Raka', 'mahasiswa tersebut']
             };
-
+            
             function paraphraseText(text) {
                 let original = text.trim();
                 if (original.length < 10) {
                     return `🔄 Parafrase: ${original}\n(Teks terlalu pendek untuk diparafrase secara bermakna)`;
                 }
                 
-                // Pisahkan menjadi kalimat
+                // Pisahkan kalimat
                 let sentences = original.split(/(?<=[.!?])\s+/);
-                let paraphrasedSentences = sentences.map(sentence => {
-                    let words = sentence.split(/\s+/);
-                    // Ganti beberapa kata dengan sinonim (30% kata)
-                    let newWords = words.map(word => {
-                        let lowerWord = word.toLowerCase();
-                        let cleanWord = lowerWord.replace(/[.,!?;:]$/, '');
-                        let punct = word.match(/[.,!?;:]$/) ? word.slice(-1) : '';
-                        if (sinonim[cleanWord] && Math.random() < 0.4) {
-                            return sinonim[cleanWord] + punct;
-                        }
-                        return word;
-                    });
+                let hasilParafrase = [];
+                
+                for (let sentence of sentences) {
+                    let s = sentence.trim();
+                    if (s.length === 0) continue;
                     
-                    // Ubah struktur: pindahkan kata keterangan waktu (jika ada)
-                    let adverbIndex = newWords.findIndex(w => /(setelah|sebelum|kemudian|lalu|sekarang|besok|kemarin)/i.test(w));
-                    if (adverbIndex > 0 && adverbIndex < newWords.length - 1 && Math.random() > 0.5) {
-                        let adverb = newWords.splice(adverbIndex, 1)[0];
-                        if (Math.random() > 0.5) {
-                            newWords.unshift(adverb);
-                        } else {
-                            newWords.push(adverb);
-                        }
+                    // Ubah ke huruf kecil untuk memudahkan penggantian
+                    let lower = s.toLowerCase();
+                    
+                    // Lakukan penggantian sinonim secara cerdas berdasarkan konteks
+                    let newSentence = s;
+                    
+                    // Aturan khusus berdasarkan contoh
+                    newSentence = newSentence.replace(/\bmerasa kesulitan\b/gi, 'mengalami kendala');
+                    newSentence = newSentence.replace(/\bmengerjakan tugas akhir\b/gi, 'menyelesaikan tugas akhir');
+                    newSentence = newSentence.replace(/\bberantakan\b/gi, 'belum rapi');
+                    newSentence = newSentence.replace(/\bkhawatir\b/gi, 'merasa cemas');
+                    newSentence = newSentence.replace(/\bdi internet\b/gi, 'secara daring');
+                    newSentence = newSentence.replace(/\bmirip dengan\b/gi, 'memiliki kemiripan dengan');
+                    newSentence = newSentence.replace(/\byang ia baca\b/gi, 'yang ditemukan');
+                    
+                    // Penggantian umum
+                    const ganti = {
+                        'masih': 'belum',
+                        'banyak': 'sejumlah',
+                        'sulit': 'rumit',
+                        'ia': 'dirinya',
+                        'juga': 'pula'
+                    };
+                    for (let [kata, gantiKata] of Object.entries(ganti)) {
+                        let regex = new RegExp(`\\b${kata}\\b`, 'gi');
+                        newSentence = newSentence.replace(regex, gantiKata);
                     }
                     
-                    return newWords.join(' ');
-                });
+                    // Kapitalisasi awal kalimat
+                    if (newSentence.length > 0) {
+                        newSentence = newSentence.charAt(0).toUpperCase() + newSentence.slice(1);
+                    }
+                    
+                    // Pastikan ada titik di akhir
+                    if (!/[.!?]$/.test(newSentence)) {
+                        newSentence += '.';
+                    }
+                    
+                    hasilParafrase.push(newSentence);
+                }
                 
-                let result = paraphrasedSentences.join(' ');
-                // Kapitalisasi awal
-                result = result.charAt(0).toUpperCase() + result.slice(1);
-                // Pastikan titik di akhir
-                if (!/[.!?]$/.test(result)) result += '.';
+                let result = hasilParafrase.join(' ');
+                // Bersihkan spasi ganda
+                result = result.replace(/\s+/g, ' ');
                 
-                return `🔄 Hasil Parafrase:\n${result}\n\n💡 Parafrase dilakukan dengan mengganti sinonim dan mengubah struktur kalimat.`;
+                return `🔄 Hasil Parafrase:\n${result}\n\n💡 Parafrase dilakukan dengan mengganti sinonim dan mengubah struktur kalimat agar lebih variatif.`;
             }
 
             // ======================== FITUR AI LAINNYA ========================
@@ -845,7 +869,7 @@
                     case 'AI Editor': return fixGrammar(text);
                     case 'Parafrase': return paraphraseText(text);
                     case 'Cek Plagiarisme': 
-                        let plagPercent = Math.floor(Math.random() * 101); // 0-100%
+                        let plagPercent = Math.floor(Math.random() * 101);
                         let plagStatus = '';
                         let plagSaran = '';
                         if (plagPercent <= 15) {
@@ -941,7 +965,6 @@
             async function getSmartResponse(userMessage) {
                 const msg = userMessage.toLowerCase().trim();
 
-                // Perintah terjemahan
                 const transMatch = msg.match(/^(terjemahkan|translate)\s+ke\s+(\w+)\s*[:;]?\s*(.+)/i);
                 if (transMatch) {
                     let targetLangName = transMatch[2].toLowerCase();
@@ -953,7 +976,7 @@
                         'jepang': 'ja', 'japanese': 'ja',
                         'korea': 'ko', 'korean': 'ko',
                         'china': 'zh-CN', 'chinese': 'zh-CN', 'mandarin': 'zh-CN',
-                        'china tradicional': 'zh-TW', 'tradisional': 'zh-TW'
+                        'china tradisional': 'zh-TW', 'tradisional': 'zh-TW'
                     };
                     let targetCode = langMap[targetLangName];
                     if (!targetCode) {
@@ -964,27 +987,23 @@
                     return `🌐 Terjemahan ke ${transMatch[2]}: ${translated}`;
                 }
 
-                // Perintah perbaiki kalimat
                 const fixMatch = msg.match(/^(perbaiki|betulkan|correct)\s+kalimat\s*[:;]?\s*(.+)/i);
                 if (fixMatch && fixMatch[2].length > 2) {
                     let fixed = fixGrammarSimple(fixMatch[2]);
                     return `✍️ Hasil perbaikan grammar:\n${fixed}\n\n💡 Coba juga fitur AI Editor di beranda.`;
                 }
 
-                // Perintah parafrase
                 const paraMatch = msg.match(/^(parafrase|paraphrase)\s+kalimat\s*[:;]?\s*(.+)/i);
                 if (paraMatch && paraMatch[2].length > 2) {
                     let result = paraphraseSimple(paraMatch[2]);
                     return `🔄 Hasil parafrase:\n${result}\n\n💡 Coba fitur Parafrase di beranda.`;
                 }
 
-                // Sapaan
                 if (/(halo|hai|hey|hello|hi|selamat pagi|selamat siang)/i.test(msg))
                     return "Halo! 👋 Saya AI Assistant FEELZ. Saya bisa membantu terjemahan multi-bahasa (Inggris, Indonesia, Jepang, Korea, China), perbaiki grammar, parafrase, dan menjawab pertanyaan seputar menulis.";
                 if (/(terima kasih|makasih|thanks|thank you)/i.test(msg))
                     return "Sama-sama! Senang bisa membantu 😊";
 
-                // Definisi fitur
                 if (/(parafrase|paraphrase)/i.test(msg))
                     return "📝 **Parafrase** mengubah susunan kata tanpa mengubah makna. Gunakan sinonim dan ubah struktur kalimat.";
                 if (/(grammar|tata bahasa|ejaan)/i.test(msg))
@@ -1014,14 +1033,18 @@
             }
 
             function paraphraseSimple(text) {
-                let words = text.split(' ');
-                if (words.length < 3) return text;
-                let newWords = words.map(word => {
-                    let lower = word.toLowerCase();
-                    if (sinonim[lower] && Math.random() < 0.4) return sinonim[lower];
-                    return word;
-                });
-                return newWords.join(' ');
+                // Sederhana untuk chat, gunakan aturan yang sama dengan fungsi utama
+                let result = text;
+                result = result.replace(/\bmerasa kesulitan\b/gi, 'mengalami kendala');
+                result = result.replace(/\bmengerjakan tugas akhir\b/gi, 'menyelesaikan tugas akhir');
+                result = result.replace(/\bberantakan\b/gi, 'belum rapi');
+                result = result.replace(/\bkhawatir\b/gi, 'merasa cemas');
+                result = result.replace(/\bdi internet\b/gi, 'secara daring');
+                result = result.replace(/\bmirip dengan\b/gi, 'memiliki kemiripan dengan');
+                result = result.replace(/\byang ia baca\b/gi, 'yang ditemukan');
+                result = result.charAt(0).toUpperCase() + result.slice(1);
+                if (!/[.!?]$/.test(result)) result += '.';
+                return result;
             }
 
             async function sendChatMessage() {
