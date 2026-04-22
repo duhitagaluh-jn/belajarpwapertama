@@ -519,7 +519,7 @@
             </div>
         </div>
 
-        <!-- Bottom Navigation -->
+        
         <div class="bottom-nav">
             <button class="nav-item" data-page="homePage">🏠<span>Beranda</span></button>
             <button class="nav-item" data-page="riwayatPage">📋<span>Riwayat</span></button>
@@ -534,7 +534,7 @@
 
     <script>
         (function () {
-            // ---------- DATA & STORAGE ----------
+          
             let currentUser = null;
             let users = JSON.parse(localStorage.getItem('feelz_users')) || [];
             let historyEntries = JSON.parse(localStorage.getItem('feelz_history')) || [];
@@ -596,10 +596,8 @@
                 `).join('');
             }
 
-            // ======================== FITUR AI YANG DIPERBAIKI ========================
-            // Terjemahan (Indonesia -> Inggris) simulasi dengan kamus sederhana
             function translateTextIndoToEnglish(text) {
-                // Kamus sederhana kata umum
+                
                 const dict = {
                     'saya': 'I', 'aku': 'I', 'kamu': 'you', 'anda': 'you', 'dia': 'he/she',
                     'mereka': 'they', 'kita': 'we', 'kami': 'we', 'ini': 'this', 'itu': 'that',
@@ -615,13 +613,13 @@
                     let punct = word.match(/[.,!?;:]$/) ? word.slice(-1) : '';
                     let trans = dict[clean] || clean;
                     if (trans === clean && clean.length > 2) {
-                        // jika tidak ada di kamus, tambahkan '?' sebagai tanda demo
+                        
                         trans = trans + '?';
                     }
                     return trans + punct;
                 });
                 let result = translatedWords.join(' ');
-                // Kapitalisasi awal kalimat
+                
                 result = result.charAt(0).toUpperCase() + result.slice(1);
                 return `🌐 Terjemahan (Indonesia → Inggris):\n${result}\n\n(Simulasi AI - untuk akurasi lebih tinggi gunakan API terjemahan)`;
             }
@@ -673,7 +671,7 @@
                 return `📊 Analisis: ${words} kata, ${chars} karakter, Formalitas: ${formality}/100. ${formality < 50 ? 'Santai' : 'Formal'}.`;
             }
 
-            // Modal untuk semua fitur
+         
             function openFeatureModal(featureName) {
                 const modalDiv = document.createElement('div');
                 modalDiv.className = 'modal';
@@ -716,7 +714,7 @@
                 closeBtn.onclick = () => modalDiv.remove();
             }
 
-            // Chat AI
+            
             function addChatMessage(role, text) {
                 const container = document.getElementById('chatMessages');
                 const msgDiv = document.createElement('div');
@@ -739,7 +737,7 @@
                 lastMsg.innerHTML = `<strong>AI Feelz</strong><br/>${answer}`;
             }
 
-            // ======================== AUTHENTICATION ========================
+            
             function registerUser(name, email, password) {
                 if (!email.includes('@')) throw new Error('Email tidak valid');
                 if (password.length < 6) throw new Error('Password minimal 6 karakter');
@@ -827,7 +825,7 @@
                 document.getElementById('dailyTip').innerHTML = `💡 Tips: ${tips[Math.floor(Math.random() * tips.length)]}`;
             }
 
-            // Dark mode
+            
             function initDarkMode() {
                 const isDark = localStorage.getItem('feelz_dark') === 'true';
                 if (isDark) document.body.classList.add('dark');
@@ -839,7 +837,7 @@
                 if (globalBtn) globalBtn.addEventListener('click', () => { const newState = !document.body.classList.contains('dark'); apply(newState); if (toggle) toggle.checked = newState; });
             }
 
-            // Event binding
+            
             function bindEvents() {
                 document.getElementById('doLoginBtn')?.addEventListener('click', () => { try { loginUser(document.getElementById('loginEmail').value, document.getElementById('loginPassword').value, document.getElementById('rememberMeCheckbox').checked); } catch (e) { showToast(e.message); } });
                 document.getElementById('doRegisterBtn')?.addEventListener('click', () => { try { registerUser(document.getElementById('regName').value, document.getElementById('regEmail').value, document.getElementById('regPassword').value); document.getElementById('registerForm').style.display = 'none'; document.getElementById('loginForm').style.display = 'block'; } catch (e) { showToast(e.message); } });
@@ -870,7 +868,7 @@
                 });
             }
 
-            // Auto login check
+           
             const remember = localStorage.getItem('feelz_remember');
             if (remember) {
                 try {
