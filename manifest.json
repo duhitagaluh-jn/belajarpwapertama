@@ -1,118 +1,54 @@
 {
-  "id": "/belajarpwapertama/",
-  "name": "FEELZ - AI Writing Assistant",
+  "id": "./FEELZ",
+  "name": "FEELZ",
   "short_name": "FEELZ",
-  "description": "Aplikasi PWA responsif AI Writing Assistant dengan fitur parafrase, editor, terjemahan, dan analisis teks. Mendukung mode offline dan dapat diinstal.",
+  "description": "Aplikasi PWA untuk memperbaiki penulisan",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
-  "display_override": [
-    "standalone",
-    "window-controls-overlay"
-  ],
-  "background_color": "#1856bb",
-  "theme_color": "#1856bb",
-  "orientation": "any",
+  "background_color": "#4F46E5",
+  "theme_color": "#4F46E5",
+  "orientation": "portrait",
   "lang": "id",
-  "dir": "ltr",
-  "prefer_related_applications": false,
-  "related_applications": [],
-  "launch_handler": {
-    "client_mode": "navigate-existing"
-  },
-  "handle_links": "preferred",
-  "edge_side_panel": {
-    "preferred_width": 400
-  },
-  "categories": [
-    "productivity",
-    "utilities",
-    "education"
-  ],
   "icons": [
-    {
-      "src": "icons/logo-512x512.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "any"
-    },
     {
       "src": "icons/logo-1024x1024.png",
       "sizes": "1024x1024",
-      "type": "image/png",
-      "purpose": "any"
+      "type": "image/png"
     },
     {
       "src": "icons/logo-512x512.png",
       "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "maskable"
+      "type": "image/png"
     }
   ],
   "screenshots": [
     {
       "src": "icons/screenshot11.png",
       "sizes": "1080x1920",
-      "type": "image/png",
-      "form_factor": "narrow",
-      "label": "Halaman utama FEELZ AI Writing Assistant"
+      "type": "image/png"
     },
     {
       "src": "icons/screenshot22.png",
       "sizes": "1080x1920",
-      "type": "image/png",
-      "form_factor": "narrow",
-      "label": "Fitur AI Editor dan Parafrase"
-    },
-    {
-      "src": "icons/screenshot33.png",
-      "sizes": "1080x1920",
-      "type": "image/png",
-      "form_factor": "wide",
-      "label": "Tampilan desktop FEELZ AI Writing Assistant"
+      "type": "image/png"
     }
   ],
   "shortcuts": [
     {
       "name": "Buka Beranda",
       "short_name": "Home",
-      "description": "Kembali ke halaman utama FEELZ",
       "url": "./index.html",
       "icons": [
         {
-          "src": "icons/logo-512x512.png",
-          "sizes": "512x512",
-          "type": "image/png"
-        }
-      ]
-    },
-    {
-      "name": "AI Chat",
-      "short_name": "Chat",
-      "description": "Buka AI Chat Assistant",
-      "url": "./index.html#chat",
-      "icons": [
-        {
-          "src": "icons/logo-512x512.png",
-          "sizes": "512x512",
-          "type": "image/png"
+          "src": "icons/logo-1024x1024.png",
+          "sizes": "1024x1024"
         }
       ]
     }
   ],
-  "share_target": {
-    "action": "./index.html",
-    "method": "GET",
-    "params": {
-      "title": "title",
-      "text": "text",
-      "url": "url"
-    }
-  },
-  "protocol_handlers": [
-    {
-      "protocol": "web+feelz",
-      "url": "./index.html?type=%s"
-    }
+  "categories": [
+    "productivity",
+    "utilities"
   ]
 }
