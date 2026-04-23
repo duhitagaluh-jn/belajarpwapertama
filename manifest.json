@@ -17,7 +17,12 @@
   "lang": "id",
   "dir": "ltr",
   "prefer_related_applications": false,
-  "related_applications": [],
+  "related_applications": [
+    {
+      "platform": "webapp",
+      "url": "https://duhitagaluh-jn.github.io/belajarpwapertama/manifest.json"
+    }
+  ],
   "launch_handler": {
     "client_mode": "navigate-existing"
   },
