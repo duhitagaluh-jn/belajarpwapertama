@@ -24,11 +24,26 @@
   "edge_side_panel": {
     "preferred_width": 400
   },
+  "scope_extensions": [
+    {
+      "origin": "https://duhitagaluh-jn.github.io"
+    }
+  ],
+  "file_handlers": [
+    {
+      "action": "./index.html",
+      "accept": {
+        "text/plain": [".txt"],
+        "text/markdown": [".md"]
+      }
+    }
+  ],
   "categories": [
     "productivity",
     "utilities",
     "education"
   ],
+  "iarc_rating_id": "",
   "icons": [
     {
       "src": "icons/logo-512x512.png",
@@ -52,21 +67,21 @@
   "screenshots": [
     {
       "src": "icons/screenshot1.png",
-      "sizes": "1080x1920",
+      "sizes": "1442x3090",
       "type": "image/png",
       "form_factor": "narrow",
       "label": "Halaman utama FEELZ AI Writing Assistant"
     },
     {
       "src": "icons/screenshot2.png",
-      "sizes": "1080x1920",
+      "sizes": "1442x3090",
       "type": "image/png",
       "form_factor": "narrow",
       "label": "Fitur AI Editor dan Parafrase"
     },
     {
       "src": "icons/screenshot1.png",
-      "sizes": "1080x1920",
+      "sizes": "1442x3090",
       "type": "image/png",
       "form_factor": "wide",
       "label": "Tampilan desktop FEELZ AI Writing Assistant"
