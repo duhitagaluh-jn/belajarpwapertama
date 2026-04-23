@@ -8,7 +8,8 @@
   "display": "standalone",
   "display_override": [
     "standalone",
-    "window-controls-overlay"
+    "window-controls-overlay",
+    "tabbed"
   ],
   "background_color": "#1856bb",
   "theme_color": "#1856bb",
@@ -38,12 +39,39 @@
       }
     }
   ],
+  "widgets": [
+    {
+      "name": "FEELZ Quick Write",
+      "short_name": "FEELZ Widget",
+      "description": "Widget cepat untuk menulis dan edit teks dengan AI",
+      "tag": "feelz-widget",
+      "ms_ac_template": "widgets/widget-template.json",
+      "data": "./index.html",
+      "type": "application/json",
+      "screenshots": [
+        {
+          "src": "icons/screenshot1.png",
+          "sizes": "1442x3090",
+          "label": "FEELZ Widget Preview"
+        }
+      ],
+      "icons": [
+        {
+          "src": "icons/logo-512x512.png",
+          "sizes": "512x512"
+        }
+      ]
+    }
+  ],
+  "note_taking": {
+    "new_note_url": "./index.html?mode=note"
+  },
   "categories": [
     "productivity",
     "utilities",
     "education"
   ],
-  "iarc_rating_id": "",
+  "iarc_rating_id": "e84b072d-71b3-4d3e-86ae-31a8ce4e53b7",
   "icons": [
     {
       "src": "icons/logo-512x512.png",
