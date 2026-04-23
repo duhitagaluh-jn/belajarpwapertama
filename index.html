@@ -4,11 +4,16 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta name="description" content="FEELZ - AI Writing Assistant. Aplikasi PWA untuk parafrase, editor teks, terjemahan, analisis, cek plagiarisme, dan ringkasan teks dengan kecerdasan buatan.">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="FEELZ">
     <meta name="theme-color" content="#1856bb" />
-    <link rel="icon" href="icons/logo-1024x1024.png" type="image/png" /> 
+    <meta name="msapplication-TileColor" content="#1856bb">
+    <meta name="msapplication-TileImage" content="icons/logo-512x512.png">
+    <link rel="icon" href="icons/logo-1024x1024.png" type="image/png" />
+    <link rel="apple-touch-icon" href="icons/logo-512x512.png">
     <link rel="manifest" href="manifest.json">
     <title>FEELZ - AI Writing Assistant</title>
     <style>
@@ -1200,6 +1205,28 @@
             bindEvents();
         })();
     </script>
+
+    <!-- Service Worker Registration -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function() {
+                navigator.serviceWorker.register('./service-worker.js')
+                    .then(function(registration) {
+                        console.log('[App] Service Worker registered with scope:', registration.scope);
+                    })
+                    .catch(function(error) {
+                        console.error('[App] Service Worker registration failed:', error);
+                    });
+            });
+        }
+    </script>
+
+    <noscript>
+        <div style="padding:2rem;text-align:center;font-family:sans-serif;">
+            <h2>JavaScript Diperlukan</h2>
+            <p>Aplikasi FEELZ memerlukan JavaScript untuk berfungsi. Silakan aktifkan JavaScript di browser Anda.</p>
+        </div>
+    </noscript>
 </body>
 
 </html>
