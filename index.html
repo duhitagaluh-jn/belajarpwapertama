@@ -4,7 +4,8 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-    <meta name="description" content="FEELZ - AI Writing Assistant. Aplikasi PWA untuk parafrase, editor teks, terjemahan, analisis, cek plagiarisme, dan ringkasan teks dengan kecerdasan buatan.">
+    <meta name="description"
+        content="FEELZ - AI Writing Assistant. Aplikasi PWA untuk parafrase, editor teks, terjemahan, analisis, cek plagiarisme, dan ringkasan teks dengan kecerdasan buatan.">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -409,6 +410,7 @@
             gap: 10px;
             flex-wrap: wrap;
         }
+
         .language-select select {
             width: auto;
             margin-bottom: 0;
@@ -424,7 +426,7 @@
 </head>
 
 <body>
-   
+
     <div id="authScreen">
         <div class="container">
             <div class="auth-card" id="loginForm">
@@ -439,7 +441,8 @@
                 <input type="password" id="loginPassword" placeholder="Password">
                 <div class="flex-between" style="margin-bottom:20px;">
                     <label><input type="checkbox" id="rememberMeCheckbox"> Ingat saya</label>
-                    <button class="btn-outline btn" id="forgotPasswordBtn" style="padding:6px 12px;">Lupa password?</button>
+                    <button class="btn-outline btn" id="forgotPasswordBtn" style="padding:6px 12px;">Lupa
+                        password?</button>
                 </div>
                 <button class="btn" id="doLoginBtn" style="width:100%">Masuk</button>
                 <p style="text-align:center; margin-top:16px;">Belum punya akun? <strong id="showRegisterBtn"
@@ -462,13 +465,13 @@
         </div>
     </div>
 
-    
+
     <div id="mainApp" style="display:none;">
         <header class="header">
             <div class="header-content">
                 <div class="logo">
                     <div class="logo-icon">
-                       <span style="font-size: 28px;">✨</span>
+                        <span style="font-size: 28px;">✨</span>
                     </div>
                     <h1>FEELZ</h1>
                 </div>
@@ -484,7 +487,7 @@
         </header>
 
         <div class="container">
-        
+
             <div id="homePage" class="page active-page">
                 <div class="input-section" style="background:#eef2ff; text-align:center;">
                     <p id="dailyTip" style="font-weight:500;">💡 Tips: Gunakan AI untuk tingkatkan tulisanmu</p>
@@ -492,7 +495,8 @@
                         <div class="flex-between"><span>🎯 Kuota AI hari ini</span><span id="usageCount2">0</span>/15
                         </div>
                         <div style="background:#cbd5e1; border-radius:12px; margin-top:6px; height:8px;">
-                            <div id="usageBar" style="width:0%; background:var(--primary); height:8px; border-radius:12px;"></div>
+                            <div id="usageBar"
+                                style="width:0%; background:var(--primary); height:8px; border-radius:12px;"></div>
                         </div>
                     </div>
                 </div>
@@ -521,7 +525,8 @@
                     <p><strong>Nama:</strong> <span id="profileName">-</span></p>
                     <p><strong>Email:</strong> <span id="profileEmail">-</span></p>
                     <button id="editProfileBtn" class="btn-outline btn" style="margin-top:12px;">✏️ Edit Profil</button>
-                    <button id="logoutBtn" class="btn-outline btn" style="margin-top:12px; background:#ef4444; color:white;">🚪
+                    <button id="logoutBtn" class="btn-outline btn"
+                        style="margin-top:12px; background:#ef4444; color:white;">🚪
                         Logout</button>
                 </div>
             </div>
@@ -537,7 +542,7 @@
             </div>
         </div>
 
-        
+
         <div class="bottom-nav">
             <button class="nav-item" data-page="homePage">🏠<span>Beranda</span></button>
             <button class="nav-item" data-page="riwayatPage">📋<span>Riwayat</span></button>
@@ -552,7 +557,7 @@
 
     <script>
         (function () {
-          
+
             let currentUser = null;
             let users = JSON.parse(localStorage.getItem('feelz_users')) || [];
             let historyEntries = JSON.parse(localStorage.getItem('feelz_history')) || [];
@@ -660,7 +665,7 @@
                 `;
                 document.body.appendChild(modalDiv);
                 setTimeout(() => modalDiv.classList.add('active'), 10);
-                
+
                 const processBtn = modalDiv.querySelector('#modalProcessBtn');
                 const closeBtn = modalDiv.querySelector('#modalCloseBtn');
                 const resultDiv = modalDiv.querySelector('#modalResult');
@@ -668,7 +673,7 @@
                 const inputTextarea = modalDiv.querySelector('#modalInput');
                 const targetSelect = modalDiv.querySelector('#targetLangSelect');
                 let currentOutput = '';
-                
+
                 processBtn.onclick = async () => {
                     const inputText = inputTextarea.value.trim();
                     if (!inputText) { showToast("Harap isi teks"); return; }
@@ -694,9 +699,9 @@
             // ======================== PERBAIKAN AI EDITOR (VERSI BARU - SESUAI CONTOH) ========================
             function fixGrammar(text) {
                 if (!text || text.trim().length === 0) return "✍️ Editor AI: (teks kosong)";
-                
+
                 let result = text.trim();
-                
+
                 // 1. Kamus kata tidak baku -> baku (lebih lengkap)
                 const kamusBaku = {
                     'ngerjain': 'mengerjakan', 'nulis': 'menulis', 'bikin': 'membuat',
@@ -714,16 +719,16 @@
                     'dg': 'dengan', 'pd': 'pada', 'dr': 'dari', 'jd': 'jadi',
                     'takut': 'khawatir', 'sama': 'dengan', 'nyatet': 'mencatat', 'fokus': 'fokus'
                 };
-                
+
                 // Terapkan penggantian kata
                 for (let [kasar, baku] of Object.entries(kamusBaku)) {
                     const regex = new RegExp(`\\b${kasar}\\b`, 'gi');
                     result = result.replace(regex, baku);
                 }
-                
+
                 // 2. Perbaiki spasi sebelum "nya"
                 result = result.replace(/\s+nya\b/gi, 'nya');
-                
+
                 // 3. Aturan khusus dari contoh
                 result = result.replace(/\b(berantakan)\s+(sangat)\b/gi, 'sangat $1');
                 result = result.replace(/\b(banyak)\s+(kata)\s+(yg)\s+(salah)\s+(tulis)\b/gi, 'banyak kesalahan penulisan');
@@ -735,32 +740,32 @@
                 result = result.replace(/\b(artikel)\s+(di internet)\b/gi, 'artikel di internet');
                 result = result.replace(/\b(selain itu|selain itu,?)\b/gi, 'Selain itu');
                 result = result.replace(/\bdia\b/gi, 'ia');
-                
+
                 // 4. Pisahkan kalimat dan proses kapitalisasi dengan benar
                 // Deteksi kalimat berdasarkan titik, seru, tanya, atau baris baru
                 let rawSentences = result.split(/(?<=[.!?])\s+|\n+/);
                 let processedSentences = [];
-                
+
                 for (let raw of rawSentences) {
                     let s = raw.trim();
                     if (s.length === 0) continue;
-                    
+
                     // Ubah seluruh kalimat menjadi lowercase dulu
                     let lower = s.toLowerCase();
-                    
+
                     // Pecah menjadi kata
                     let words = lower.split(/\s+/);
                     let newWords = [];
-                    
+
                     // Daftar nama diri yang perlu kapital (bisa ditambah)
                     const properNouns = ['raka', 'jakarta', 'indonesia', 'budi', 'siti'];
-                    
+
                     for (let i = 0; i < words.length; i++) {
                         let word = words[i];
                         // Hapus tanda baca untuk pengecekan nama diri
                         let cleanWord = word.replace(/[.,!?;:]$/, '');
                         let punct = word.match(/[.,!?;:]$/) ? word.slice(-1) : '';
-                        
+
                         if (i === 0) {
                             // Huruf pertama kalimat: kapital
                             newWords.push(word.charAt(0).toUpperCase() + word.slice(1));
@@ -776,36 +781,36 @@
                             }
                         }
                     }
-                    
+
                     let fixedSentence = newWords.join(' ');
-                    
+
                     // Tambah koma setelah kata keterangan waktu di awal kalimat (contoh: "Suatu hari")
                     fixedSentence = fixedSentence.replace(/^(suatu hari)\s+/i, '$1, ');
-                    
+
                     // Perbaiki tanda baca: hapus spasi sebelum koma/titik, tambah spasi setelah koma
                     fixedSentence = fixedSentence.replace(/\s+([.,!?;:])/g, '$1');
                     fixedSentence = fixedSentence.replace(/([.,!?;:])([^\s])/g, '$1 $2');
-                    
+
                     // Pastikan diakhiri titik jika tidak ada
                     if (!/[.!?]$/.test(fixedSentence)) {
                         fixedSentence += '.';
                     }
-                    
+
                     processedSentences.push(fixedSentence);
                 }
-                
+
                 // Gabungkan kalimat dengan spasi
                 result = processedSentences.join(' ');
-                
+
                 // 5. Bersihkan spasi ganda
                 result = result.replace(/\s+/g, ' ');
-                
+
                 // 6. Perbaikan tambahan agar sesuai contoh
-                result = result.replace(/\bkarena\s+ia\s+sering\s+membaca\s+referensi\s+tetapi\s+lupa\s+mencatat\s+sumbernya\s+dengan\s+benar\./gi, 
+                result = result.replace(/\bkarena\s+ia\s+sering\s+membaca\s+referensi\s+tetapi\s+lupa\s+mencatat\s+sumbernya\s+dengan\s+benar\./gi,
                     'Karena ia sering membaca referensi, tetapi lupa mencatat sumbernya dengan benar.');
-                result = result.replace(/akibatnya, ia menjadi semakin panik dan sulit fokus mengerjakan tugas\./gi, 
+                result = result.replace(/akibatnya, ia menjadi semakin panik dan sulit fokus mengerjakan tugas\./gi,
                     'Akibatnya, ia menjadi semakin panik dan sulit fokus mengerjakan tugas.');
-                
+
                 return `✍️ Editor AI:\n${result}`;
             }
 
@@ -815,16 +820,16 @@
                 if (original.length < 10) {
                     return `🔄 Parafrase: ${original}\n(Teks terlalu pendek untuk diparafrase secara bermakna)`;
                 }
-                
+
                 let sentences = original.split(/(?<=[.!?])\s+/);
                 let hasilParafrase = [];
-                
+
                 for (let sentence of sentences) {
                     let s = sentence.trim();
                     if (s.length === 0) continue;
-                    
+
                     let newSentence = s;
-                    
+
                     // Aturan khusus
                     newSentence = newSentence.replace(/\bmerasa kesulitan\b/gi, 'mengalami kendala');
                     newSentence = newSentence.replace(/\bmengerjakan tugas akhir\b/gi, 'menyelesaikan tugas akhir');
@@ -833,7 +838,7 @@
                     newSentence = newSentence.replace(/\bdi internet\b/gi, 'secara daring');
                     newSentence = newSentence.replace(/\bmirip dengan\b/gi, 'memiliki kemiripan dengan');
                     newSentence = newSentence.replace(/\byang ia baca\b/gi, 'yang ditemukan');
-                    
+
                     const ganti = {
                         'masih': 'belum',
                         'banyak': 'sejumlah',
@@ -845,14 +850,14 @@
                         let regex = new RegExp(`\\b${kata}\\b`, 'gi');
                         newSentence = newSentence.replace(regex, gantiKata);
                     }
-                    
+
                     if (newSentence.length > 0) {
                         newSentence = newSentence.charAt(0).toUpperCase() + newSentence.slice(1);
                     }
                     if (!/[.!?]$/.test(newSentence)) newSentence += '.';
                     hasilParafrase.push(newSentence);
                 }
-                
+
                 let result = hasilParafrase.join(' ');
                 result = result.replace(/\s+/g, ' ');
                 return `🔄 Hasil Parafrase:\n${result}\n\n💡 Parafrase dilakukan dengan mengganti sinonim dan mengubah struktur kalimat agar lebih variatif.`;
@@ -866,7 +871,7 @@
                 switch (feature) {
                     case 'AI Editor': return fixGrammar(text);
                     case 'Parafrase': return paraphraseText(text);
-                    case 'Cek Plagiarisme': 
+                    case 'Cek Plagiarisme':
                         let plagPercent = Math.floor(Math.random() * 101);
                         let plagStatus = '';
                         let plagSaran = '';
@@ -882,7 +887,7 @@
                         }
                         return `🔍 Hasil Cek Plagiarisme:\n📊 Persentase kemiripan: ${plagPercent}%\n📌 Status: ${plagStatus}\n💡 Saran: ${plagSaran}`;
                     case 'Ringkas Teks': return summarizeText(text);
-                    case 'Terjemahan': 
+                    case 'Terjemahan':
                         openTranslationModal();
                         return "Silakan pilih bahasa target di jendela yang muncul.";
                     case 'Analisis Teks': return analyzeText(text);
@@ -1209,12 +1214,12 @@
     <!-- Service Worker Registration -->
     <script>
         if ('serviceWorker' in navigator) {
-            window.addEventListener('load', function() {
+            window.addEventListener('load', function () {
                 navigator.serviceWorker.register('./service-worker.js')
-                    .then(function(registration) {
+                    .then(function (registration) {
                         console.log('[App] Service Worker registered with scope:', registration.scope);
                     })
-                    .catch(function(error) {
+                    .catch(function (error) {
                         console.error('[App] Service Worker registration failed:', error);
                     });
             });
